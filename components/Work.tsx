@@ -81,7 +81,7 @@ export function Work() {
         />
       </article>
 
-      <ul className="mt-16 grid gap-10 sm:grid-cols-2 lg:mt-20 lg:gap-x-12 lg:gap-y-14">
+      <ul className="mt-16 grid gap-10 sm:grid-cols-2 sm:items-center lg:mt-20 lg:gap-x-12 lg:gap-y-14">
         {rest.map((item) => (
           <li key={item.id} className="work-card">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -93,7 +93,7 @@ export function Work() {
               </span>
             </div>
             {"icon" in item && item.icon === "f1-helmet" && (
-              <F1Helmet className="mt-5" />
+              <F1Helmet className="my-8 sm:my-10" />
             )}
             <RevealWords
               text={item.blurb}
