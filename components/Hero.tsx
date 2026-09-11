@@ -61,7 +61,7 @@ export function Hero() {
         className="fade-in fade-in-delay-2 mt-6 h-px w-14 bg-ochre/70"
       />
 
-      <p className="fade-in fade-in-delay-3 mt-8 inline-flex items-center gap-2 text-sm text-ink-muted">
+      <p className="fade-in fade-in-delay-3 mt-8 flex flex-col items-center gap-2 text-sm text-ink-muted sm:flex-row">
         <StatusStar className="text-cocoa/75" />
         <span>{site.status}</span>
       </p>
