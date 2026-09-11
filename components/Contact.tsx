@@ -20,19 +20,25 @@ export function Contact() {
       </p>
 
       <ul className="mt-10 flex flex-wrap gap-x-8 gap-y-4">
-        {contact.links.map((link) => (
-          <li key={link.href}>
-            <a
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="contact-link text-sm tracking-[0.04em] text-ink"
-            >
-              {link.label}
-              <span className="sr-only"> (opens in new tab)</span>
-            </a>
-          </li>
-        ))}
+        {contact.links.map((link) => {
+          const isMail = link.href.startsWith("mailto:");
+          return (
+            <li key={link.href}>
+              <a
+                href={link.href}
+                {...(isMail
+                  ? {}
+                  : { target: "_blank", rel: "noopener noreferrer" })}
+                className="contact-link text-sm tracking-[0.04em] text-ink"
+              >
+                {link.label}
+                {!isMail && (
+                  <span className="sr-only"> (opens in new tab)</span>
+                )}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </section>
   );

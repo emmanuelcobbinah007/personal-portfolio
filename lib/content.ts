@@ -246,6 +246,10 @@ export const contact = {
   intro: "Say hello. No pitch required.",
   links: [
     {
+      label: "Email",
+      href: "mailto:emmanuelcobbinah707@gmail.com",
+    },
+    {
       label: "LinkedIn",
       href: "https://linkedin.com/in/emmanuelcobbinah",
     },
