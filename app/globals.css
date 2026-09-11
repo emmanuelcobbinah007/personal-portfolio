@@ -362,35 +362,28 @@ body::before {
   }
 }
 
-/* Handwritten nav brand — first-visit draw */
+/* Handwritten nav brand — solid fill, first-visit wipe */
 .brand-mark-svg {
   overflow: visible;
   display: block;
 }
 
-.brand-stroke {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-  opacity: 0.95;
+.brand-fill {
+  fill: currentColor;
 }
 
-.brand-mark[data-animate="true"] .brand-stroke {
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+.brand-mark[data-animate="true"] .brand-mark-svg {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.95s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.brand-mark[data-animate="true"].is-drawn .brand-stroke {
-  stroke-dashoffset: 0;
+.brand-mark[data-animate="true"].is-drawn .brand-mark-svg {
+  clip-path: inset(0 0 0 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .brand-stroke {
-    stroke-dashoffset: 0;
+  .brand-mark[data-animate="true"] .brand-mark-svg {
+    clip-path: none;
     transition: none !important;
   }
 }

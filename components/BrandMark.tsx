@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 const STORAGE_KEY = "mrcob-brand-drawn";
 
-/** Handwritten MrCob.binah — draws once on first visit this session. */
+/** Handwritten MrCob.binah — solid ink mark, draws once per session. */
 export function BrandMark() {
   const ref = useRef<HTMLSpanElement>(null);
   const [animate, setAnimate] = useState(false);
@@ -35,26 +35,20 @@ export function BrandMark() {
   return (
     <span
       ref={ref}
-      className="brand-mark inline-flex items-center text-cocoa"
+      className="brand-mark inline-flex items-center text-ink"
       data-animate={animate ? "true" : "false"}
       aria-hidden
     >
       <svg
-        className="brand-mark-svg h-7 w-auto sm:h-8"
+        className="brand-mark-svg h-8 w-auto sm:h-9"
         viewBox={brandViewBox}
-        fill="none"
+        fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
         role="img"
       >
         <title>MrCob.binah</title>
         {brandPaths.map((d, i) => (
-          <path
-            key={i}
-            className="brand-stroke"
-            style={{ transitionDelay: animate ? `${i * 0.04}s` : "0s" }}
-            pathLength={1}
-            d={d}
-          />
+          <path key={i} className="brand-fill" d={d} />
         ))}
       </svg>
     </span>
