@@ -1,0 +1,332 @@
+@import "tailwindcss";
+
+:root {
+  --parchment: #f5f1e9;
+  --ink: #20201d;
+  --cocoa: #342821;
+  --lagoon: #587c70;
+  --clay: #b86e51;
+  --ochre: #d2a34d;
+  --ink-muted: color-mix(in srgb, var(--ink) 62%, var(--parchment));
+  --ink-faint: color-mix(in srgb, var(--ink) 38%, var(--parchment));
+  --rule: color-mix(in srgb, var(--ink) 12%, var(--parchment));
+}
+
+@theme inline {
+  --color-parchment: var(--parchment);
+  --color-ink: var(--ink);
+  --color-cocoa: var(--cocoa);
+  --color-lagoon: var(--lagoon);
+  --color-clay: var(--clay);
+  --color-ochre: var(--ochre);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-rule: var(--rule);
+  --font-display: var(--font-instrument-serif);
+  --font-sans: var(--font-dm-sans);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 1.25rem;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge */
+}
+
+html::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--parchment);
+  color: var(--ink);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+/* Soft paper grain — barely there, like real parchment */
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  opacity: 0.045;
+  background-image: url("/paper-noise.png");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+  mix-blend-mode: multiply;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--lagoon) 28%, var(--parchment));
+  color: var(--ink);
+}
+
+.font-display {
+  font-family: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100%;
+  z-index: 100;
+  border-radius: 0.25rem;
+  background: var(--ink);
+  color: var(--parchment);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  transition: top 180ms ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
+  outline: 2px solid var(--lagoon);
+  outline-offset: 2px;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.6rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fade-up 220ms ease-out both;
+}
+
+.fade-in-delay-1 {
+  animation-delay: 60ms;
+}
+
+.fade-in-delay-2 {
+  animation-delay: 120ms;
+}
+
+.fade-in-delay-3 {
+  animation-delay: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in,
+  .fade-in-delay-1,
+  .fade-in-delay-2,
+  .fade-in-delay-3 {
+    animation: none;
+  }
+}
+
+/* Signature-top avatar: small circle, soft lagoon ring */
+.hero-avatar {
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--lagoon) 45%, var(--parchment));
+}
+
+/* Real signature — vector stroke draw */
+.signature-svg {
+  overflow: visible;
+}
+
+.signature-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0.92;
+}
+
+.signature-draw.is-drawn .signature-stroke {
+  animation: signature-write 0.85s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes signature-write {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signature-stroke {
+    stroke-dashoffset: 0;
+    animation: none !important;
+  }
+}
+
+.accordion > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.accordion > summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion .chevron {
+  transition: transform 180ms ease;
+}
+
+.accordion[open] .chevron {
+  transform: rotate(90deg);
+}
+
+.accordion .accordion-body {
+  animation: fade-up 200ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accordion .chevron,
+  .accordion .accordion-body {
+    animation: none;
+    transition: none;
+  }
+}
+
+.nav-link {
+  color: var(--ink-muted);
+  transition: color 180ms ease, opacity 180ms ease, transform 180ms ease;
+}
+
+.nav-link:hover {
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.work-card {
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+
+.work-card:hover {
+  transform: translateY(-2px);
+}
+
+.work-card a {
+  transition: color 180ms ease;
+}
+
+.work-card a:hover {
+  color: var(--lagoon);
+}
+
+.note-link {
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.note-link:hover {
+  opacity: 0.72;
+  transform: translateX(3px);
+}
+
+.contact-link {
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.contact-link:hover {
+  color: var(--lagoon);
+  transform: translateY(-1px);
+}
+
+.section-rule {
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-link:hover,
+  .work-card:hover,
+  .note-link:hover,
+  .contact-link:hover {
+    transform: none;
+  }
+}
+
+
+/* Minimal scroll reveal — once, soft, no parallax */
+.reveal {
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition:
+    opacity 420ms ease,
+    transform 420ms ease;
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* F1 helmet sketch — strokes realize on scroll */
+.helmet-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0.75;
+}
+
+.helmet-sketch.is-sketched .helmet-stroke,
+.helmet-mark.is-sketched .helmet-stroke {
+  animation: helmet-draw 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.helmet-sketch-raster {
+  opacity: 0.22;
+  transition: opacity 900ms ease 0.35s;
+  mix-blend-mode: multiply;
+}
+
+.helmet-sketch.is-sketched .helmet-sketch-raster {
+  opacity: 0.9;
+}
+
+@keyframes helmet-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .helmet-stroke {
+    stroke-dashoffset: 0;
+    animation: none !important;
+  }
+  .helmet-sketch-raster {
+    opacity: 0.9;
+    transition: none;
+  }
+}
