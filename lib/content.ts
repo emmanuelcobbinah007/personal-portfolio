@@ -60,7 +60,7 @@ export const work = [
       "Founder research and BI agent. Accepted into the AWS startup program. Still early: learning in public, not claiming product-market fit.",
     href: "https://geniy-frontend.vercel.app",
     hrefLabel: "geniy-frontend.vercel.app",
-    icon: "geniy-mascot",
+    icon: null,
   },
   {
     id: "artifact",
