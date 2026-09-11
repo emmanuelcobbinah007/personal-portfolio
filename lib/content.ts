@@ -3,10 +3,10 @@ export const site = {
   shortName: "MrCob.binah",
   location: "Accra, Ghana",
   heroLine: "I build because it gives me hope.",
-  status: "Software Engineer · AWS Cloud Practitioner",
+  status: "Software Engineer · COMPSSA VP · AWS Cloud Practitioner",
   title: "Emmanuel Cobbinah · Full-stack & Cloud",
   description:
-    "Full-stack developer and aspiring cloud engineer in Accra. AWS Certified Cloud Practitioner. Founder of Aurora Software Labs. Building ShopAurora.",
+    "Emmanuel Cobbinah is a full-stack developer and aspiring cloud engineer in Accra. AWS Certified Cloud Practitioner, Vice President of COMPSSA (University of Ghana Computer Science Students Association) for 2026/2027, and founder of Aurora Software Labs building ShopAurora.",
 };
 
 export const nav = [
@@ -80,7 +80,7 @@ export const about = {
   signoff: "Emmanuel",
   paragraphs: [
     "I write software from Accra. Most days that means ShopAurora: helping merchants who already live on WhatsApp get a real store, with Mobile Money, without the lecture.",
-    "I'm an AWS Certified Cloud Practitioner (CLF-C02), and I'm moving toward cloud and DevOps on purpose. Pocket-F1 started as a break from SaaS, then became the lab: Terraform, CloudFront, S3, and a Lightsail multiplayer race where every phone has to roll the same dice.",
+    "I'm an AWS Certified Cloud Practitioner (CLF-C02), Vice President of COMPSSA at the University of Ghana for 2026/2027, and I'm moving toward cloud and DevOps on purpose. Pocket-F1 started as a break from SaaS, then became the lab: Terraform, CloudFront, S3, and a Lightsail multiplayer race where every phone has to roll the same dice.",
     "I used to say yes to everything. Products died. I deleted a client's database once (Neon saved me). The Medium essays are the diary. The resume is the tidy version. I build because it still gives me hope.",
   ],
 };
@@ -115,6 +115,13 @@ export const resume = {
       title: "Experience",
       defaultOpen: true,
       items: [
+        {
+          heading: "COMPSSA, University of Ghana",
+          meta: "Vice President · 2026/2027 academic year",
+          points: [
+            "Vice President of the Computer Science Students Association: student leadership, community, and building with the next wave of UG CS talent.",
+          ],
+        },
         {
           heading: "Aurora Software Labs",
           meta: "Lead Software Engineer · Accra · Apr 2025 – Present",
