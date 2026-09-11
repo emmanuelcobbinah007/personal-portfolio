@@ -14,7 +14,7 @@ export function F1Helmet({ className = "" }: { className?: string }) {
       aria-hidden
     >
       <svg
-        className="helmet-svg mx-auto h-auto w-full max-w-md text-cocoa"
+        className="helmet-svg mx-auto h-auto w-full max-w-[11rem] text-cocoa sm:max-w-[13rem]"
         viewBox={helmetViewBox}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
