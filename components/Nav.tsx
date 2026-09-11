@@ -1,3 +1,4 @@
+import { BrandMark } from "@/components/BrandMark";
 import { nav, site } from "@/lib/content";
 
 export function Nav() {
@@ -9,9 +10,10 @@ export function Nav() {
       >
         <a
           href="#top"
-          className="font-display text-center text-lg tracking-tight text-ink transition-opacity duration-200 hover:opacity-70 sm:text-left"
+          className="text-ink transition-opacity duration-200 hover:opacity-70"
+          aria-label={site.shortName}
         >
-          {site.shortName}
+          <BrandMark />
         </a>
         <ul className="flex w-full items-center justify-between gap-x-3 sm:w-auto sm:justify-end sm:gap-x-7">
           {nav.map((item) => (
