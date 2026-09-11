@@ -58,7 +58,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Soft paper grain — barely there, like real parchment */
+/* Soft paper grain - barely there, like real parchment */
 body::before {
   content: "";
   pointer-events: none;
@@ -143,7 +143,7 @@ body::before {
   box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--lagoon) 45%, var(--parchment));
 }
 
-/* Real signature — vector stroke draw */
+/* Real signature - vector stroke draw */
 .signature-svg {
   overflow: visible;
 }
@@ -176,31 +176,61 @@ body::before {
   }
 }
 
-.accordion > summary {
-  list-style: none;
+.accordion-trigger {
   cursor: pointer;
-}
-
-.accordion > summary::-webkit-details-marker {
-  display: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
 }
 
 .accordion .chevron {
-  transition: transform 180ms ease;
+  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.accordion[open] .chevron {
+.accordion .chevron.is-open {
   transform: rotate(90deg);
 }
 
-.accordion .accordion-body {
-  animation: fade-up 200ms ease-out both;
+/* Drawer: grid 0fr → 1fr + fade */
+.accordion-drawer {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 380ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 280ms ease;
+}
+
+.accordion-drawer[data-open="true"] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition:
+    grid-template-rows 420ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 360ms ease 40ms;
+}
+
+.accordion-drawer-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.accordion-drawer.reduce-motion {
+  transition: none;
+}
+
+.accordion-drawer.reduce-motion[data-open="false"] {
+  display: none;
+}
+
+.accordion-drawer.reduce-motion[data-open="true"] {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .accordion .chevron,
-  .accordion .accordion-body {
-    animation: none;
+  .accordion .chevron {
     transition: none;
   }
 }
@@ -264,7 +294,7 @@ body::before {
 }
 
 
-/* Minimal scroll reveal — once, soft, no parallax */
+/* Minimal scroll reveal - once, soft, no parallax */
 .reveal {
   opacity: 0;
   transform: translateY(0.75rem);
@@ -287,31 +317,24 @@ body::before {
   }
 }
 
-/* F1 helmet sketch — strokes realize on scroll */
+/* F1 helmet - vector stroke draw (same idea as signature) */
+.helmet-svg {
+  overflow: visible;
+}
+
 .helmet-stroke {
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.35;
+  stroke-width: 1.4;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  opacity: 0.75;
+  opacity: 0.88;
 }
 
-.helmet-sketch.is-sketched .helmet-stroke,
-.helmet-mark.is-sketched .helmet-stroke {
-  animation: helmet-draw 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.helmet-sketch-raster {
-  opacity: 0.22;
-  transition: opacity 900ms ease 0.35s;
-  mix-blend-mode: multiply;
-}
-
-.helmet-sketch.is-sketched .helmet-sketch-raster {
-  opacity: 0.9;
+.helmet-sketch.is-sketched .helmet-stroke {
+  animation: helmet-draw 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes helmet-draw {
@@ -325,8 +348,20 @@ body::before {
     stroke-dashoffset: 0;
     animation: none !important;
   }
-  .helmet-sketch-raster {
-    opacity: 0.9;
-    transition: none;
+}
+
+/* Word-by-word scroll reveal */
+.reveal-words {
+  text-wrap: pretty;
+}
+
+.reveal-word {
+  display: inline;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-word {
+    opacity: 1 !important;
   }
 }

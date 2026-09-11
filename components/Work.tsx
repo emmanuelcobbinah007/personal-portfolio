@@ -1,4 +1,5 @@
 import { F1Helmet } from "@/components/F1Helmet";
+import { RevealWords } from "@/components/RevealWords";
 import { work } from "@/lib/content";
 
 function ProjectLinks({
@@ -69,9 +70,10 @@ export function Work() {
             {lead.status}
           </span>
         </div>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted sm:text-lg">
-          {lead.blurb}
-        </p>
+        <RevealWords
+          text={lead.blurb}
+          className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted sm:text-lg"
+        />
         <ProjectLinks
           href={lead.href}
           hrefLabel={lead.hrefLabel}
@@ -91,11 +93,12 @@ export function Work() {
               </span>
             </div>
             {"icon" in item && item.icon === "f1-helmet" && (
-              <F1Helmet variant="study" className="mt-5 max-w-sm" />
+              <F1Helmet className="mt-5" />
             )}
-            <p className="mt-3 text-[0.95rem] leading-relaxed text-ink-muted">
-              {item.blurb}
-            </p>
+            <RevealWords
+              text={item.blurb}
+              className="mt-3 text-[0.95rem] leading-relaxed text-ink-muted"
+            />
             <ProjectLinks
               href={item.href}
               hrefLabel={item.hrefLabel}

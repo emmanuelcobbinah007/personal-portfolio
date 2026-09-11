@@ -1,3 +1,4 @@
+import { RevealWords } from "@/components/RevealWords";
 import { about } from "@/lib/content";
 
 export function About() {
@@ -21,7 +22,7 @@ export function About() {
         </p>
         <div className="mt-8 space-y-6 text-base leading-relaxed text-ink-muted sm:text-lg">
           {about.paragraphs.map((p) => (
-            <p key={p.slice(0, 28)}>{p}</p>
+            <RevealWords key={p.slice(0, 28)} text={p} />
           ))}
         </div>
         <p className="font-display mt-10 text-xl text-cocoa">{about.signoff}</p>

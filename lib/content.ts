@@ -1,10 +1,10 @@
 export const site = {
   name: "Emmanuel Cobbinah",
-  shortName: "Emmanuel",
+  shortName: "MrCob.binah",
   location: "Accra, Ghana",
   heroLine: "I build because it gives me hope.",
-  status: "Currently building ShopAurora · AWS Cloud Practitioner",
-  title: "Emmanuel Cobbinah — Full-stack & Cloud",
+  status: "Software Engineer · AWS Cloud Practitioner",
+  title: "Emmanuel Cobbinah · Full-stack & Cloud",
   description:
     "Full-stack developer and aspiring cloud engineer in Accra. AWS Certified Cloud Practitioner. Founder of Aurora Software Labs. Building ShopAurora.",
 };
@@ -24,7 +24,7 @@ export const work = [
     lead: true,
     status: "Live",
     blurb:
-      "WhatsApp and Instagram merchants get a real store — not another link-in-bio. Catalog, checkout, Mobile Money. Built for Accra first.",
+      "WhatsApp and Instagram merchants get a real store, not another link-in-bio. Catalog, checkout, Mobile Money. Built for Accra first.",
     href: "https://shopaurora.africa",
     hrefLabel: "shopaurora.africa",
     icon: null,
@@ -35,7 +35,7 @@ export const work = [
     lead: false,
     status: "Live · multiplayer",
     blurb:
-      "F1 party game for up to eight phones — lights out, tire strategy, mid-race chaos that has to stay identical on every device. CloudFront + S3 for the app; Lightsail keeps the race state and sockets alive. UI still catching up; the systems lesson was the point.",
+      "F1 party game for up to eight phones: lights out, tire strategy, mid-race chaos that has to stay identical on every device. CloudFront + S3 for the app; Lightsail keeps the race state and sockets alive. UI still catching up; the systems lesson was the point.",
     href: "https://d2yrwsemu4iolt.cloudfront.net/",
     hrefLabel: "d2yrwsemu4iolt.cloudfront.net",
     icon: "f1-helmet",
@@ -57,7 +57,7 @@ export const work = [
     lead: false,
     status: "Early",
     blurb:
-      "Founder research and BI agent. Accepted into the AWS startup program. Still early — learning in public, not claiming product-market fit.",
+      "Founder research and BI agent. Accepted into the AWS startup program. Still early: learning in public, not claiming product-market fit.",
     href: "https://geniy-frontend.vercel.app",
     hrefLabel: "geniy-frontend.vercel.app",
     icon: null,
@@ -77,10 +77,10 @@ export const work = [
 
 export const about = {
   salutation: "Hey,",
-  signoff: "— Emmanuel",
+  signoff: "Emmanuel",
   paragraphs: [
-    "I write software from Accra. Most days that means ShopAurora — helping merchants who already live on WhatsApp get a real store, with Mobile Money, without the lecture.",
-    "I'm an AWS Certified Cloud Practitioner (CLF-C02), and I'm moving toward cloud and DevOps on purpose. Pocket-F1 started as a break from SaaS — then became the lab: Terraform, CloudFront, S3, and a Lightsail multiplayer race where every phone has to roll the same dice.",
+    "I write software from Accra. Most days that means ShopAurora: helping merchants who already live on WhatsApp get a real store, with Mobile Money, without the lecture.",
+    "I'm an AWS Certified Cloud Practitioner (CLF-C02), and I'm moving toward cloud and DevOps on purpose. Pocket-F1 started as a break from SaaS, then became the lab: Terraform, CloudFront, S3, and a Lightsail multiplayer race where every phone has to roll the same dice.",
     "I used to say yes to everything. Products died. I deleted a client's database once (Neon saved me). The Medium essays are the diary. The resume is the tidy version. I build because it still gives me hope.",
   ],
 };
@@ -119,7 +119,7 @@ export const resume = {
           heading: "Aurora Software Labs",
           meta: "Lead Software Engineer · Accra · Apr 2025 – Present",
           points: [
-            "Led a cross-functional engineering team of 8 — secure coding, agile delivery, CI/CD, production stability.",
+            "Led a cross-functional engineering team of 8: secure coding, agile delivery, CI/CD, production stability.",
             "Architected a production e-voting platform under tight timelines: integrity, access control, fault tolerance first.",
             "Automated the delivery loop so concurrent projects shipped with less manual toil.",
           ],
@@ -144,7 +144,7 @@ export const resume = {
           meta: "Africa-first social commerce · shopaurora.africa · 2024 – Present",
           href: "https://shopaurora.africa",
           points: [
-            "Live platform for 82 merchants across Ghana — Paystack payments, SQL-backed transactions, graceful failure recovery.",
+            "Live platform for 82 merchants across Ghana: Paystack payments, SQL-backed transactions, graceful failure recovery.",
             "Rolled back a commission-split feature when payment trust broke. Judgment over ego.",
           ],
         },
@@ -162,7 +162,7 @@ export const resume = {
           meta: "Campus e-voting · vote-aurora.vercel.app",
           href: "https://vote-aurora.vercel.app",
           points: [
-            "Production e-voting under tight timelines — integrity, access control, fault tolerance first.",
+            "Production e-voting under tight timelines: integrity, access control, fault tolerance first.",
           ],
         },
         {
@@ -170,7 +170,7 @@ export const resume = {
           meta: "F1 party game · CloudFront + Lightsail · multiplayer",
           href: "https://d2yrwsemu4iolt.cloudfront.net/",
           points: [
-            "Up to 8 players, three tracks, tire strategy, synchronized mid-race events — races ~5–7 minutes.",
+            "Up to 8 players, three tracks, tire strategy, synchronized mid-race events; races ~5–7 minutes.",
             "Static app on S3/CloudFront via Terraform; multiplayer race state and sockets on Lightsail (Lambda’s short-lived model didn’t fit).",
             "UI still evolving; built to put CLF-C02 skills into practice after getting tired of only shipping SaaS.",
           ],
@@ -218,7 +218,7 @@ export const resume = {
       defaultOpen: false,
       items: [
         {
-          heading: "2nd Place — COMPSSA × Alle-AI Hackathon",
+          heading: "2nd Place, COMPSSA × Alle-AI Hackathon",
           meta: "2025",
           points: [
             "Built Orbit, an AI campus networking app (GPT-4o matchmaking and icebreakers), competing against teams across Ghana.",

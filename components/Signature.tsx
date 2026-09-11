@@ -3,7 +3,7 @@
 import { signaturePaths, signatureViewBox } from "@/lib/signaturePaths";
 import { useEffect, useRef } from "react";
 
-/** Real signature as vector strokes — draws like a pen when it enters view. */
+/** Real signature as vector strokes - draws like a pen when it enters view. */
 export function Signature() {
   const ref = useRef<HTMLDivElement>(null);
 

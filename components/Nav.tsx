@@ -5,7 +5,7 @@ export function Nav() {
     <header className="fade-in">
       <nav
         aria-label="Primary"
-        className="mx-auto flex max-w-6xl items-baseline justify-between gap-6 px-6 pb-2 pt-8 sm:px-10 lg:px-12"
+        className="mx-auto flex max-w-6xl flex-col gap-5 px-6 pb-2 pt-8 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6 sm:px-10 lg:px-12"
       >
         <a
           href="#top"
@@ -13,12 +13,12 @@ export function Nav() {
         >
           {site.shortName}
         </a>
-        <ul className="flex flex-wrap items-center justify-end gap-x-5 gap-y-2 sm:gap-x-7">
+        <ul className="flex w-full items-center justify-between gap-x-3 sm:w-auto sm:justify-end sm:gap-x-7">
           {nav.map((item) => (
-            <li key={item.href}>
+            <li key={item.href} className="shrink-0">
               <a
                 href={item.href}
-                className="nav-link text-[0.8125rem] tracking-[0.04em]"
+                className="nav-link text-[0.75rem] tracking-[0.04em] sm:text-[0.8125rem]"
               >
                 {item.label}
               </a>
