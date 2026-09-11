@@ -1,4 +1,5 @@
 import { F1Helmet } from "@/components/F1Helmet";
+import { GeniyMascot } from "@/components/GeniyMascot";
 import { RevealWords } from "@/components/RevealWords";
 import { work } from "@/lib/content";
 
@@ -94,6 +95,9 @@ export function Work() {
             </div>
             {"icon" in item && item.icon === "f1-helmet" && (
               <F1Helmet className="my-8 sm:my-10" />
+            )}
+            {"icon" in item && item.icon === "geniy-mascot" && (
+              <GeniyMascot className="my-8 sm:my-10" />
             )}
             <RevealWords
               text={item.blurb}

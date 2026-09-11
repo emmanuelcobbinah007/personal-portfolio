@@ -318,11 +318,13 @@ body::before {
   }
 }
 
-/* F1 helmet - reversible vector stroke draw */
+/* Shared ink sketches - reversible vector stroke draw */
+.ink-sketch-svg,
 .helmet-svg {
   overflow: visible;
 }
 
+.ink-stroke,
 .helmet-stroke {
   fill: none;
   stroke: currentColor;
@@ -335,11 +337,13 @@ body::before {
   transition: stroke-dashoffset 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.ink-sketch.is-sketched .ink-stroke,
 .helmet-sketch.is-sketched .helmet-stroke {
   stroke-dashoffset: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ink-stroke,
   .helmet-stroke {
     stroke-dashoffset: 0;
     transition: none !important;
