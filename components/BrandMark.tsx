@@ -1,11 +1,11 @@
 "use client";
 
-import { brandPaths, brandViewBox } from "@/lib/brandPaths";
+import { site } from "@/lib/content";
 import { useEffect, useRef, useState } from "react";
 
 const STORAGE_KEY = "mrcob-brand-drawn";
 
-/** Handwritten MrCob.binah — solid ink paths, first-visit wipe. */
+/** Clean Instrument Serif wordmark — first-visit wipe. */
 export function BrandMark() {
   const ref = useRef<HTMLSpanElement>(null);
   const [animate, setAnimate] = useState(false);
@@ -39,18 +39,9 @@ export function BrandMark() {
       data-animate={animate ? "true" : "false"}
       aria-hidden
     >
-      <svg
-        className="brand-mark-svg h-6 w-auto sm:h-7"
-        viewBox={brandViewBox}
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-        role="img"
-      >
-        <title>MrCob.binah</title>
-        {brandPaths.map((d, i) => (
-          <path key={i} className="brand-fill" d={d} />
-        ))}
-      </svg>
+      <span className="brand-mark-text font-display text-[1.35rem] leading-none tracking-[-0.01em] sm:text-[1.5rem]">
+        {site.shortName}
+      </span>
     </span>
   );
 }

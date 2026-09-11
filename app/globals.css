@@ -362,58 +362,31 @@ body::before {
   }
 }
 
-/* Handwritten nav brand — solid fill, first-visit wipe */
+/* Instrument Serif nav wordmark — first-visit wipe */
 .brand-mark {
-  line-height: 0;
+  line-height: 1;
   overflow: visible;
 }
 
-.brand-mark-svg {
-  overflow: visible;
+.brand-mark-text {
   display: block;
-  max-width: min(11rem, 52vw);
+  font-family: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  white-space: nowrap;
 }
 
-.brand-fill {
-  fill: currentColor;
-}
-
-.brand-mark[data-animate="true"] .brand-mark-svg {
+.brand-mark[data-animate="true"] .brand-mark-text {
   clip-path: inset(0 100% 0 0);
-  transition: clip-path 0.95s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: clip-path 0.85s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.brand-mark[data-animate="true"].is-drawn .brand-mark-svg {
+.brand-mark[data-animate="true"].is-drawn .brand-mark-text {
   clip-path: inset(0 0 0 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .brand-mark[data-animate="true"] .brand-mark-svg {
+  .brand-mark[data-animate="true"] .brand-mark-text {
     clip-path: none;
     transition: none !important;
   }
 }
-
-
-@media (min-width: 640px) {
-  .brand-mark-img {
-    height: 2.25rem;
-  }
-}
-
-.brand-mark[data-animate="true"] .brand-mark-img {
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path 0.95s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.brand-mark[data-animate="true"].is-drawn .brand-mark-img {
-  clip-path: inset(0 0 0 0);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .brand-mark[data-animate="true"] .brand-mark-img {
-    clip-path: none;
-    transition: none !important;
-  }
-}
-
