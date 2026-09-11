@@ -17,7 +17,7 @@ const dmSans = DM_Sans({
 });
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://emmanuelcobbinah.com";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://mrcobbinah.vercel.app";
 
 export const viewport: Viewport = {
   themeColor: "#F5F1E9",

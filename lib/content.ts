@@ -79,9 +79,9 @@ export const about = {
   salutation: "Hey,",
   signoff: "Emmanuel",
   paragraphs: [
-    "I write software from Accra. Most days that means ShopAurora: helping merchants who already live on WhatsApp get a real store, with Mobile Money, without the lecture.",
-    "I'm an AWS Certified Cloud Practitioner (CLF-C02), Vice President of COMPSSA at the University of Ghana for 2026/2027, and I'm moving toward cloud and DevOps on purpose. Pocket-F1 started as a break from SaaS, then became the lab: Terraform, CloudFront, S3, and a Lightsail multiplayer race where every phone has to roll the same dice.",
-    "I used to say yes to everything. Products died. I deleted a client's database once (Neon saved me). The Medium essays are the diary. The resume is the tidy version. I build because it still gives me hope.",
+    "Nice meeting you. I'm a full-stack developer in Accra, currently in the thick of ShopAurora, leaning into cloud and DevOps, and trying to get a role somewhere with free lunch. Not because it's trendy. Because I'm doing anything that still gives me hope. Some days that's the SaaS. Some days it's LeetCode and applying to Google with fingers crossed. Some days it's watching Fireship and calling it passive productivity. Long story short, I want to be a source of hope for my parents, and a lot of the time that looks like doing things that hold weight.",
+    "A fact about me: at a Cursor hackathon I got tired of shipping another SaaS nobody would open again, so I built Pocket-F1. A browser F1 party game for the motorsport-uninitiated, so they can see why some of us (me) go crazy for it. Tyre wear, pit strategy, DRS, a safety car. Two weeks, solo, tick-based engine, shipped to AWS. It's the closest thing I have to a lab where I break systems on purpose and learn what holds. Try it. It's pretty neat.",
+    "Some things I've built have quietly died. I'm honest about that too. Still here, still shipping. Let's chat sometime.",
   ],
 };
 
