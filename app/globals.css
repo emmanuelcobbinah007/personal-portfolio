@@ -363,9 +363,15 @@ body::before {
 }
 
 /* Handwritten nav brand — solid fill, first-visit wipe */
+.brand-mark {
+  line-height: 0;
+  overflow: visible;
+}
+
 .brand-mark-svg {
   overflow: visible;
   display: block;
+  max-width: min(11rem, 52vw);
 }
 
 .brand-fill {

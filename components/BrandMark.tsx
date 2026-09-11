@@ -40,7 +40,7 @@ export function BrandMark() {
       aria-hidden
     >
       <svg
-        className="brand-mark-svg h-8 w-auto sm:h-9"
+        className="brand-mark-svg h-6 w-auto sm:h-7"
         viewBox={brandViewBox}
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
