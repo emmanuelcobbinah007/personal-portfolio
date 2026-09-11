@@ -1,34 +1,11 @@
 "use client";
 
 import { helmetPaths, helmetViewBox } from "@/lib/helmetPaths";
-import { useEffect, useRef } from "react";
+import { useStrokeReveal } from "@/hooks/useStrokeReveal";
 
-/** F1 helmet as vector strokes - draws like a pen when it enters view (same idea as Signature). */
+/** F1 helmet as vector strokes - draws on enter, undraws on leave. */
 export function F1Helmet({ className = "" }: { className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      el.classList.add("is-sketched");
-      return;
-    }
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          el.classList.add("is-sketched");
-          io.disconnect();
-        }
-      },
-      { threshold: 0.2 },
-    );
-
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const ref = useStrokeReveal("is-sketched", 0.18);
 
   return (
     <div
@@ -48,7 +25,7 @@ export function F1Helmet({ className = "" }: { className?: string }) {
           <path
             key={i}
             className="helmet-stroke"
-            style={{ animationDelay: `${i * 0.035}s` }}
+            style={{ transitionDelay: `${i * 0.02}s` }}
             pathLength={1}
             d={d}
           />

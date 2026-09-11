@@ -5,11 +5,11 @@ export function Nav() {
     <header className="fade-in">
       <nav
         aria-label="Primary"
-        className="mx-auto flex max-w-6xl flex-col gap-5 px-6 pb-2 pt-8 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6 sm:px-10 lg:px-12"
+        className="mx-auto flex max-w-6xl flex-col items-center gap-5 px-6 pb-2 pt-8 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6 sm:px-10 lg:px-12"
       >
         <a
           href="#top"
-          className="font-display text-lg tracking-tight text-ink transition-opacity duration-200 hover:opacity-70"
+          className="font-display text-center text-lg tracking-tight text-ink transition-opacity duration-200 hover:opacity-70 sm:text-left"
         >
           {site.shortName}
         </a>

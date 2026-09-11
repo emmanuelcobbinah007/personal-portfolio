@@ -157,26 +157,27 @@ body::before {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   opacity: 0.92;
+  transition: stroke-dashoffset 0.85s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .signature-draw.is-drawn .signature-stroke {
-  animation: signature-write 0.85s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes signature-write {
-  to {
-    stroke-dashoffset: 0;
-  }
+  stroke-dashoffset: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .signature-stroke {
     stroke-dashoffset: 0;
-    animation: none !important;
+    transition: none !important;
   }
 }
 
+.accordion {
+  padding-block: 1.35rem;
+}
+
 .accordion-trigger {
+  min-height: 2.75rem;
+
   cursor: pointer;
   background: none;
   border: 0;
@@ -317,7 +318,7 @@ body::before {
   }
 }
 
-/* F1 helmet - vector stroke draw (same idea as signature) */
+/* F1 helmet - reversible vector stroke draw */
 .helmet-svg {
   overflow: visible;
 }
@@ -325,28 +326,23 @@ body::before {
 .helmet-stroke {
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.4;
+  stroke-width: 1.7;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  opacity: 0.88;
+  opacity: 0.92;
+  transition: stroke-dashoffset 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .helmet-sketch.is-sketched .helmet-stroke {
-  animation: helmet-draw 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes helmet-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
+  stroke-dashoffset: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .helmet-stroke {
     stroke-dashoffset: 0;
-    animation: none !important;
+    transition: none !important;
   }
 }
 

@@ -45,13 +45,13 @@ function AccordionPanel({
   }, []);
 
   return (
-    <div className={`accordion py-5${open ? " is-open" : ""}`}>
+    <div className={`accordion${open ? " is-open" : ""}`}>
       <button
         type="button"
         id={buttonId}
         aria-expanded={open}
         aria-controls={panelId}
-        className="accordion-trigger flex w-full items-center justify-between gap-4 py-1 text-left"
+        className="accordion-trigger flex w-full items-center justify-between gap-4 text-left"
         onClick={() => setOpen((v) => !v)}
       >
         <span className="font-display text-xl text-ink sm:text-2xl">{title}</span>

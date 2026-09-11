@@ -1,34 +1,11 @@
 "use client";
 
 import { signaturePaths, signatureViewBox } from "@/lib/signaturePaths";
-import { useEffect, useRef } from "react";
+import { useStrokeReveal } from "@/hooks/useStrokeReveal";
 
-/** Real signature as vector strokes - draws like a pen when it enters view. */
+/** Real signature as vector strokes - draws on enter, undraws on leave. */
 export function Signature() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      el.classList.add("is-drawn");
-      return;
-    }
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          el.classList.add("is-drawn");
-          io.disconnect();
-        }
-      },
-      { threshold: 0.25 },
-    );
-
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const ref = useStrokeReveal("is-drawn", 0.2);
 
   return (
     <div
@@ -48,7 +25,7 @@ export function Signature() {
           <path
             key={i}
             className="signature-stroke"
-            style={{ animationDelay: `${i * 0.07}s` }}
+            style={{ transitionDelay: `${i * 0.05}s` }}
             pathLength={1}
             d={d}
           />
