@@ -29,7 +29,7 @@ export function BlackStarBridge({ className = "" }: { className?: string }) {
           Mobile: shift right so ~65% of the arch stays in view on the right edge.
         */}
         <svg
-          className="helmet-svg absolute inset-y-0 right-0 h-full w-auto min-w-[155%] max-w-none translate-x-[12%] text-cocoa sm:min-w-[130%] sm:translate-x-[4%] lg:min-w-full lg:w-full lg:translate-x-0"
+          className="helmet-svg absolute inset-y-0 right-0 h-full w-auto min-w-[170%] max-w-none -translate-x-[18%] text-cocoa sm:min-w-[135%] sm:-translate-x-[6%] lg:min-w-full lg:w-full lg:translate-x-0"
           viewBox={blackStarViewBox}
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
