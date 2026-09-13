@@ -5,7 +5,7 @@ export function Notes() {
     <section
       id="notes"
       aria-labelledby="notes-heading"
-      className="mx-auto max-w-6xl px-6 py-20 sm:px-10 lg:px-12 lg:py-28"
+      className="mx-auto max-w-6xl px-6 pb-20 pt-10 sm:px-10 sm:pb-24 sm:pt-12 lg:px-12 lg:pb-28 lg:pt-14"
     >
       <h2
         id="notes-heading"

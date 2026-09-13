@@ -29,7 +29,7 @@ export default function Home() {
           <Resume />
         </Reveal>
         <Reveal>
-          <BlackStarBridge className="mt-6 mb-2 sm:mt-10 sm:mb-4" />
+          <BlackStarBridge className="-mt-4 mb-0 sm:-mt-6 sm:mb-1" />
         </Reveal>
         <Reveal>
           <Notes />
