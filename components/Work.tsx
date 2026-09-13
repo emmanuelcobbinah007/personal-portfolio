@@ -165,8 +165,9 @@ export function Work() {
 
       {vote && (
         <article className="work-card mt-16 lg:mt-20">
-          {/* Mobile: sketch on top via col-reverse; desktop: copy left, ballot right */}
-          <div className="flex flex-col-reverse gap-8 lg:flex-row lg:items-center lg:gap-12">
+          {/* Mobile: sketch on top; desktop: ballot left, copy right (like ShopAurora) */}
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
+            <VoteBallotBox className="shrink-0 lg:w-[42%]" />
             <ProjectCopy
               name={vote.name}
               status={vote.status}
@@ -176,7 +177,6 @@ export function Work() {
               links={itemLinks(vote)}
               statusClassName="text-xs tracking-[0.06em] text-ink-faint uppercase"
             />
-            <VoteBallotBox className="shrink-0 lg:w-[42%]" />
           </div>
         </article>
       )}
