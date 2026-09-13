@@ -32,7 +32,7 @@ export function BlackStarBridge({ className = "" }: { className?: string }) {
           {blackStarConnectors.map((d, i) => (
             <path
               key={`c-${i}`}
-              className="helmet-stroke"
+              className="bridge-stroke"
               pathLength={1}
               d={d}
             />
@@ -40,7 +40,7 @@ export function BlackStarBridge({ className = "" }: { className?: string }) {
           {blackStarPaths.map((d, i) => (
             <path
               key={`p-${i}`}
-              className="helmet-stroke"
+              className="bridge-stroke"
               style={{ transitionDelay: `${0.08 + i * 0.012}s` }}
               pathLength={1}
               d={d}
