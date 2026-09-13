@@ -41,8 +41,43 @@ function ProjectLinks({
   );
 }
 
+function ProjectCopy({
+  name,
+  status,
+  blurb,
+  href,
+  hrefLabel,
+  links,
+  statusClassName = "text-xs tracking-[0.06em] text-clay uppercase",
+  titleClassName = "font-display text-2xl text-ink sm:text-3xl",
+  blurbClassName = "mt-4 max-w-2xl text-base leading-relaxed text-ink-muted sm:text-lg",
+}: {
+  name: string;
+  status: string;
+  blurb: string;
+  href: string | null;
+  hrefLabel: string | null;
+  links?: readonly { label: string; href: string }[];
+  statusClassName?: string;
+  titleClassName?: string;
+  blurbClassName?: string;
+}) {
+  return (
+    <div className="min-w-0 flex-1 lg:max-w-xl">
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <h3 className={titleClassName}>{name}</h3>
+        <span className={statusClassName}>{status}</span>
+      </div>
+      <RevealWords text={blurb} className={blurbClassName} />
+      <ProjectLinks href={href} hrefLabel={hrefLabel} links={links} />
+    </div>
+  );
+}
+
 export function Work() {
   const [lead, ...rest] = work;
+  const pocket = rest.find((item) => item.id === "pocket-f1");
+  const grid = rest.filter((item) => item.id !== "pocket-f1");
 
   return (
     <section
@@ -65,34 +100,50 @@ export function Work() {
       <article className="work-card">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
           <ShopStorefront className="shrink-0 lg:w-[42%]" />
-          <div className="min-w-0 flex-1 lg:max-w-xl">
-            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <h3 className="font-display text-2xl text-ink sm:text-3xl">
-                {lead.name}
-              </h3>
-              <span className="text-xs tracking-[0.06em] text-clay uppercase">
-                {lead.status}
-              </span>
-            </div>
-            <RevealWords
-              text={lead.blurb}
-              className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted sm:text-lg"
-            />
-            <ProjectLinks
-              href={lead.href}
-              hrefLabel={lead.hrefLabel}
-              links={
-                "links" in lead
-                  ? (lead.links as readonly { label: string; href: string }[])
-                  : undefined
-              }
-            />
-          </div>
+          <ProjectCopy
+            name={lead.name}
+            status={lead.status}
+            blurb={lead.blurb}
+            href={lead.href}
+            hrefLabel={lead.hrefLabel}
+            links={
+              "links" in lead
+                ? (lead.links as readonly { label: string; href: string }[])
+                : undefined
+            }
+          />
         </div>
       </article>
 
-      <ul className="mt-16 grid gap-10 sm:grid-cols-2 sm:items-center lg:mt-20 lg:gap-x-12 lg:gap-y-14">
-        {rest.map((item) => (
+      {pocket && (
+        <article className="work-card mt-16 lg:mt-20">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
+            {/* Mobile: sketch first; desktop: copy left, helmet right via order */}
+            <F1Helmet className="order-1 shrink-0 lg:order-2 lg:w-[42%]" />
+            <div className="order-2 lg:order-1">
+              <ProjectCopy
+                name={pocket.name}
+                status={pocket.status}
+                blurb={pocket.blurb}
+                href={pocket.href}
+                hrefLabel={pocket.hrefLabel}
+                links={
+                  "links" in pocket
+                    ? (pocket.links as readonly {
+                        label: string;
+                        href: string;
+                      }[])
+                    : undefined
+                }
+                statusClassName="text-xs tracking-[0.06em] text-ink-faint uppercase"
+              />
+            </div>
+          </div>
+        </article>
+      )}
+
+      <ul className="mt-16 grid gap-10 sm:grid-cols-2 lg:mt-20 lg:gap-x-12 lg:gap-y-14">
+        {grid.map((item) => (
           <li key={item.id} className="work-card">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               <h3 className="font-display text-xl text-ink sm:text-2xl">
@@ -102,9 +153,6 @@ export function Work() {
                 {item.status}
               </span>
             </div>
-            {"icon" in item && item.icon === "f1-helmet" && (
-              <F1Helmet className="my-8 sm:my-10" />
-            )}
             <RevealWords
               text={item.blurb}
               className="mt-3 text-[0.95rem] leading-relaxed text-ink-muted"
