@@ -1,5 +1,6 @@
 import { F1Helmet } from "@/components/F1Helmet";
 import { ShopStorefront } from "@/components/ShopStorefront";
+import { VoteBallotBox } from "@/components/VoteBallotBox";
 import { RevealWords } from "@/components/RevealWords";
 import { work } from "@/lib/content";
 
@@ -74,10 +75,19 @@ function ProjectCopy({
   );
 }
 
+function itemLinks(item: (typeof work)[number]) {
+  return "links" in item
+    ? (item.links as readonly { label: string; href: string }[])
+    : undefined;
+}
+
 export function Work() {
   const [lead, ...rest] = work;
   const pocket = rest.find((item) => item.id === "pocket-f1");
-  const grid = rest.filter((item) => item.id !== "pocket-f1");
+  const vote = rest.find((item) => item.id === "voteaurora");
+  const grid = rest.filter(
+    (item) => item.id !== "pocket-f1" && item.id !== "voteaurora",
+  );
 
   return (
     <section
@@ -106,11 +116,7 @@ export function Work() {
             blurb={lead.blurb}
             href={lead.href}
             hrefLabel={lead.hrefLabel}
-            links={
-              "links" in lead
-                ? (lead.links as readonly { label: string; href: string }[])
-                : undefined
-            }
+            links={itemLinks(lead)}
           />
         </div>
       </article>
@@ -118,7 +124,6 @@ export function Work() {
       {pocket && (
         <article className="work-card mt-16 lg:mt-20">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
-            {/* Mobile: sketch first; desktop: copy left, helmet right via order */}
             <F1Helmet className="order-1 shrink-0 lg:order-2 lg:w-[42%]" />
             <div className="order-2 lg:order-1">
               <ProjectCopy
@@ -127,17 +132,27 @@ export function Work() {
                 blurb={pocket.blurb}
                 href={pocket.href}
                 hrefLabel={pocket.hrefLabel}
-                links={
-                  "links" in pocket
-                    ? (pocket.links as readonly {
-                        label: string;
-                        href: string;
-                      }[])
-                    : undefined
-                }
+                links={itemLinks(pocket)}
                 statusClassName="text-xs tracking-[0.06em] text-ink-faint uppercase"
               />
             </div>
+          </div>
+        </article>
+      )}
+
+      {vote && (
+        <article className="work-card mt-16 lg:mt-20">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
+            <VoteBallotBox className="shrink-0 lg:w-[42%]" />
+            <ProjectCopy
+              name={vote.name}
+              status={vote.status}
+              blurb={vote.blurb}
+              href={vote.href}
+              hrefLabel={vote.hrefLabel}
+              links={itemLinks(vote)}
+              statusClassName="text-xs tracking-[0.06em] text-ink-faint uppercase"
+            />
           </div>
         </article>
       )}
@@ -160,11 +175,7 @@ export function Work() {
             <ProjectLinks
               href={item.href}
               hrefLabel={item.hrefLabel}
-              links={
-                "links" in item
-                  ? (item.links as readonly { label: string; href: string }[])
-                  : undefined
-              }
+              links={itemLinks(item)}
             />
           </li>
         ))}
