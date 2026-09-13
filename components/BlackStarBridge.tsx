@@ -8,33 +8,33 @@ import {
 import { useStrokeReveal } from "@/hooks/useStrokeReveal";
 
 /**
- * Independence Arch bridge between Resume and Notes.
- * Wider than the content column; one handwritten wave joins the arch on the right.
- * Mobile shows ~65% of the arch on the right (rest clipped).
+ * Independence Arch banner between Resume and Notes.
+ * Wider than the content column; one handwritten wave joins the arch.
+ * Mobile: overflow clips so ~65% of the arch stays on the right.
  */
 export function BlackStarBridge({ className = "" }: { className?: string }) {
-  const ref = useStrokeReveal("is-sketched", 0.1);
+  const ref = useStrokeReveal("is-sketched", 0.01);
 
   return (
     <div
-      className={`mx-auto w-full max-w-[90rem] overflow-hidden ${className}`.trim()}
+      className={`mx-auto w-[min(100%,90rem)] overflow-hidden ${className}`.trim()}
     >
       <div
         ref={ref}
-        className="helmet-sketch relative h-[7rem] w-full sm:h-[8.5rem] lg:h-[10rem]"
+        className="helmet-sketch is-sketched relative w-full"
         aria-hidden
       >
         {/*
-          Right-biased SVG: wave from left joins the smaller arch.
-          Mobile: shift right so ~65% of the arch stays in view on the right edge.
+          Banner SVG: full width on desktop. On mobile, widen + shift left
+          so the arch sits on the right with ~65% visible.
         */}
         <svg
-          className="helmet-svg absolute inset-y-0 right-0 h-full w-auto min-w-[170%] max-w-none -translate-x-[18%] text-cocoa sm:min-w-[135%] sm:-translate-x-[6%] lg:min-w-full lg:w-full lg:translate-x-0"
+          className="helmet-svg block h-auto w-[155%] max-w-none -translate-x-[8%] text-cocoa sm:w-[120%] sm:-translate-x-[4%] lg:w-full lg:translate-x-0"
           viewBox={blackStarViewBox}
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           role="img"
-          preserveAspectRatio="xMaxYMid meet"
+          preserveAspectRatio="xMidYMid meet"
         >
           <title>Accra Independence Arch sketch</title>
           {blackStarConnectors.map((d, i) => (
@@ -50,7 +50,7 @@ export function BlackStarBridge({ className = "" }: { className?: string }) {
             <path
               key={`p-${i}`}
               className="helmet-stroke"
-              style={{ transitionDelay: `${0.12 + i * 0.014}s` }}
+              style={{ transitionDelay: `${0.1 + i * 0.012}s` }}
               pathLength={1}
               d={d}
             />
