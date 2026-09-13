@@ -1,4 +1,5 @@
 import { notes } from "@/lib/content";
+import { BlackStarBridge } from "@/components/BlackStarBridge";
 
 export function Notes() {
   return (
@@ -7,6 +8,8 @@ export function Notes() {
       aria-labelledby="notes-heading"
       className="mx-auto max-w-6xl px-6 py-20 sm:px-10 lg:px-12 lg:py-28"
     >
+      <BlackStarBridge className="-mx-6 mb-10 sm:-mx-10 sm:mb-12 lg:-mx-12 lg:mb-14" />
+
       <h2
         id="notes-heading"
         className="font-display text-3xl text-cocoa sm:text-4xl"
