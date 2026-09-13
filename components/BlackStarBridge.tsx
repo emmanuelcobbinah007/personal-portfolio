@@ -10,7 +10,7 @@ import { useStrokeReveal } from "@/hooks/useStrokeReveal";
 /**
  * Independence Arch banner between Resume and Notes.
  * Wider than content; one handwritten wave joins the arch on the right.
- * Mobile: right-align an oversized SVG so ~65% of the arch stays in view.
+ * Mobile: shift left so ~65% of the arch sits on the right of the viewport.
  */
 export function BlackStarBridge({ className = "" }: { className?: string }) {
   const ref = useStrokeReveal("is-sketched", 0.01);
@@ -21,16 +21,16 @@ export function BlackStarBridge({ className = "" }: { className?: string }) {
     >
       <div ref={ref} className="helmet-sketch is-sketched w-full" aria-hidden>
         {/*
-          Desktop: full banner. Mobile: wider SVG, right-aligned so the Arch
-          (right side of the viewBox) stays on screen instead of clipping away.
+          Mobile: oversized + translate left so the Arch (right side of the
+          viewBox) enters the screen. Desktop: full banner, no shift.
         */}
         <svg
-          className="helmet-svg ml-auto block h-auto w-[170%] max-w-none text-cocoa sm:w-[125%] lg:w-full"
+          className="helmet-svg block h-auto w-[160%] max-w-none -translate-x-[42%] text-cocoa sm:w-[125%] sm:-translate-x-[14%] lg:w-full lg:translate-x-0"
           viewBox={blackStarViewBox}
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           role="img"
-          preserveAspectRatio="xMaxYMid meet"
+          preserveAspectRatio="xMidYMid meet"
         >
           <title>Accra Independence Arch sketch</title>
           {blackStarConnectors.map((d, i) => (
