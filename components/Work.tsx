@@ -140,23 +140,7 @@ export function Work() {
         </article>
       )}
 
-      {vote && (
-        <article className="work-card mt-16 lg:mt-20">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
-            <VoteBallotBox className="shrink-0 lg:w-[42%]" />
-            <ProjectCopy
-              name={vote.name}
-              status={vote.status}
-              blurb={vote.blurb}
-              href={vote.href}
-              hrefLabel={vote.hrefLabel}
-              links={itemLinks(vote)}
-              statusClassName="text-xs tracking-[0.06em] text-ink-faint uppercase"
-            />
-          </div>
-        </article>
-      )}
-
+      {/* Pattern interrupt: text-only pair before the closing sketched row */}
       <ul className="mt-16 grid gap-10 sm:grid-cols-2 lg:mt-20 lg:gap-x-12 lg:gap-y-14">
         {grid.map((item) => (
           <li key={item.id} className="work-card">
@@ -180,6 +164,26 @@ export function Work() {
           </li>
         ))}
       </ul>
+
+      {vote && (
+        <article className="work-card mt-16 lg:mt-20">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
+            {/* Mobile: sketch first; desktop: copy left, ballot right (mirrors Pocket-F1) */}
+            <VoteBallotBox className="order-1 shrink-0 lg:order-2 lg:w-[42%]" />
+            <div className="order-2 lg:order-1">
+              <ProjectCopy
+                name={vote.name}
+                status={vote.status}
+                blurb={vote.blurb}
+                href={vote.href}
+                hrefLabel={vote.hrefLabel}
+                links={itemLinks(vote)}
+                statusClassName="text-xs tracking-[0.06em] text-ink-faint uppercase"
+              />
+            </div>
+          </div>
+        </article>
+      )}
     </section>
   );
 }
