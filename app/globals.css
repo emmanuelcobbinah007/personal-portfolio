@@ -394,3 +394,49 @@ body::before {
     transition: none !important;
   }
 }
+
+
+/* Intro signature loader — once per page load */
+html.loader-lock {
+  overflow: hidden;
+}
+
+.signature-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--parchment);
+  transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.signature-loader.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.signature-loader-inner {
+  width: min(22rem, 78vw);
+  padding: 1.5rem;
+}
+
+.signature-loader-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.signature-loader-stroke {
+  transition: stroke-dashoffset 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html.loader-drawn .signature-loader-stroke {
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signature-loader {
+    display: none;
+  }
+}
