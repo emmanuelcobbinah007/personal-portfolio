@@ -123,19 +123,17 @@ export function Work() {
 
       {pocket && (
         <article className="work-card mt-16 lg:mt-20">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
-            <F1Helmet className="order-1 shrink-0 lg:order-2 lg:w-[42%]" />
-            <div className="order-2 lg:order-1">
-              <ProjectCopy
-                name={pocket.name}
-                status={pocket.status}
-                blurb={pocket.blurb}
-                href={pocket.href}
-                hrefLabel={pocket.hrefLabel}
-                links={itemLinks(pocket)}
-                statusClassName="text-xs tracking-[0.06em] text-ink-faint uppercase"
-              />
-            </div>
+          <div className="flex flex-col-reverse gap-8 lg:flex-row lg:items-center lg:gap-12">
+            <ProjectCopy
+              name={pocket.name}
+              status={pocket.status}
+              blurb={pocket.blurb}
+              href={pocket.href}
+              hrefLabel={pocket.hrefLabel}
+              links={itemLinks(pocket)}
+              statusClassName="text-xs tracking-[0.06em] text-ink-faint uppercase"
+            />
+            <F1Helmet className="shrink-0 lg:w-[42%]" />
           </div>
         </article>
       )}
@@ -167,20 +165,18 @@ export function Work() {
 
       {vote && (
         <article className="work-card mt-16 lg:mt-20">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
-            {/* Mobile: sketch first; desktop: copy left, ballot right (mirrors Pocket-F1) */}
-            <VoteBallotBox className="order-1 shrink-0 lg:order-2 lg:w-[42%]" />
-            <div className="order-2 lg:order-1">
-              <ProjectCopy
-                name={vote.name}
-                status={vote.status}
-                blurb={vote.blurb}
-                href={vote.href}
-                hrefLabel={vote.hrefLabel}
-                links={itemLinks(vote)}
-                statusClassName="text-xs tracking-[0.06em] text-ink-faint uppercase"
-              />
-            </div>
+          {/* Mobile: sketch on top via col-reverse; desktop: copy left, ballot right */}
+          <div className="flex flex-col-reverse gap-8 lg:flex-row lg:items-center lg:gap-12">
+            <ProjectCopy
+              name={vote.name}
+              status={vote.status}
+              blurb={vote.blurb}
+              href={vote.href}
+              hrefLabel={vote.hrefLabel}
+              links={itemLinks(vote)}
+              statusClassName="text-xs tracking-[0.06em] text-ink-faint uppercase"
+            />
+            <VoteBallotBox className="shrink-0 lg:w-[42%]" />
           </div>
         </article>
       )}
