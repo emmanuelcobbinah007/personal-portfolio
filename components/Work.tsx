@@ -1,4 +1,5 @@
 import { F1Helmet } from "@/components/F1Helmet";
+import { ShopStorefront } from "@/components/ShopStorefront";
 import { RevealWords } from "@/components/RevealWords";
 import { work } from "@/lib/content";
 
@@ -61,24 +62,33 @@ export function Work() {
 
       <hr className="section-rule mt-6 mb-12" />
 
-      <article className="work-card max-w-3xl">
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h3 className="font-display text-2xl text-ink sm:text-3xl">
-            {lead.name}
-          </h3>
-          <span className="text-xs tracking-[0.06em] text-clay uppercase">
-            {lead.status}
-          </span>
+      <article className="work-card">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
+          <ShopStorefront className="shrink-0 lg:w-[42%]" />
+          <div className="min-w-0 flex-1 lg:max-w-xl">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h3 className="font-display text-2xl text-ink sm:text-3xl">
+                {lead.name}
+              </h3>
+              <span className="text-xs tracking-[0.06em] text-clay uppercase">
+                {lead.status}
+              </span>
+            </div>
+            <RevealWords
+              text={lead.blurb}
+              className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted sm:text-lg"
+            />
+            <ProjectLinks
+              href={lead.href}
+              hrefLabel={lead.hrefLabel}
+              links={
+                "links" in lead
+                  ? (lead.links as readonly { label: string; href: string }[])
+                  : undefined
+              }
+            />
+          </div>
         </div>
-        <RevealWords
-          text={lead.blurb}
-          className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted sm:text-lg"
-        />
-        <ProjectLinks
-          href={lead.href}
-          hrefLabel={lead.hrefLabel}
-          links={"links" in lead ? (lead.links as readonly { label: string; href: string }[]) : undefined}
-        />
       </article>
 
       <ul className="mt-16 grid gap-10 sm:grid-cols-2 sm:items-center lg:mt-20 lg:gap-x-12 lg:gap-y-14">
