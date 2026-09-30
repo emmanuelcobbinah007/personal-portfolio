@@ -66,6 +66,7 @@ const BLOOM_VARS = [
   "--ink-seed2",
   "--ink-d2",
   "--ink-ease",
+  "--ink-dur",
 ] as const;
 
 const rand = (a: number, b: number) => a + (b - a) * Math.random();
@@ -113,6 +114,7 @@ export function setTheme(next: Theme, origin?: { x: number; y: number }) {
   root.style.setProperty("--ink-seed2", String(seed2));
   root.style.setProperty("--ink-d2", (delay / duration).toFixed(4));
   root.style.setProperty("--ink-ease", ease);
+  root.style.setProperty("--ink-dur", String(Math.round(duration)));
   root.classList.add(painterly ? "ink-bloom" : "ink-fade");
 
   const vt = document.startViewTransition(() => applyTheme(next));

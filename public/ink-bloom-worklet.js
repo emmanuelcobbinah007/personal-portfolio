@@ -90,25 +90,87 @@ function makeShape(seed, isDrop) {
     drops.push({ a: r() * TAU, dist: between(1.02, 1.2), size: between(0.03, 0.08), at: between(0.2, 0.65) });
   }
 
-  // Landing splash for a falling drop: a small blot that pops in, a few fat
-  // beads close by, and fine spray thrown outward (absolute px sizes).
-  const splash = [];
-  let r0 = 7;
-  let weight = 1;
-  if (isDrop) {
-    r0 = between(16, 30);
-    weight = between(0.8, 1);
-    const nBeads = 2 + Math.floor(r() * 3);
-    for (let i = 0; i < nBeads; i++) {
-      splash.push({ a: r() * TAU, dist: between(1.15, 1.8), size: between(3.5, 8), stretch: between(1, 1.5) });
-    }
-    const nSpray = 10 + Math.floor(r() * 10);
-    for (let i = 0; i < nSpray; i++) {
-      splash.push({ a: r() * TAU, dist: between(1.7, 4.6), size: between(1.2, 4.2), stretch: between(1.5, 2.8) });
+  // Landing splash, shared by both drops (the toggle one is smaller):
+  // an irregular core that pops in with a squash, clustered tapering streaks
+  // with beads at their tips, and detached droplets further out on the rays.
+  const sc = isDrop ? 1 : 0.55;
+  const r0 = between(15, 25) * sc;
+  const weight = isDrop ? between(0.8, 1) : 1;
+  const core = {
+    wob: [3, 4, 5, 7, 9].map((k) => ({ k, amp: between(0.03, 0.1) / Math.sqrt(k / 3), phase: r() * TAU })),
+    squashAxis: r() * TAU,
+    popMs: between(60, 100),
+  };
+  const rays = [];
+  const nClusters = 3 + Math.floor(r() * 3);
+  const clusterBase = r() * TAU;
+  for (let c = 0; c < nClusters; c++) {
+    // Clusters spread round the core with uneven gaps between them
+    const ca = clusterBase + (c / nClusters) * TAU + between(-0.5, 0.5);
+    const n = 1 + Math.floor(r() * 4);
+    for (let i = 0; i < n; i++) {
+      const len = r0 * between(0.7, 2.6) * (i === 0 ? 1 : between(0.5, 1));
+      const base = r0 * between(0.1, 0.22);
+      const droplets = [];
+      const nDrop = Math.floor(r() * 3.2);
+      let dist = 1;
+      let size = base * between(0.5, 0.8);
+      for (let j = 0; j < nDrop; j++) {
+        dist += between(0.18, 0.5);
+        size *= between(0.5, 0.8);
+        droplets.push({ dist, size: Math.max(0.7, size), wob: r() * TAU });
+      }
+      rays.push({
+        a: ca + between(-0.32, 0.32),
+        len,
+        base,
+        bend: between(-0.18, 0.18),
+        bead: base * between(0.55, 1),
+        wob: r() * TAU,
+        droplets,
+        speed: between(0.8, 1.15), // longer streaks can arrive a touch later
+      });
     }
   }
+  // Crown: many short, fine spikes all round the core rim
+  const nCrown = 10 + Math.floor(r() * 12);
+  for (let i = 0; i < nCrown; i++) {
+    const base = r0 * between(0.05, 0.11);
+    rays.push({
+      a: r() * TAU,
+      len: r0 * between(0.2, 0.65),
+      base,
+      bend: between(-0.1, 0.1),
+      bead: base * between(0.6, 1.1),
+      wob: r() * TAU,
+      droplets: [],
+      speed: between(1.1, 1.5),
+    });
+  }
+  // A few loose flecks off-ray
+  const flecks = [];
+  const nF = 5 + Math.floor(r() * 8);
+  for (let i = 0; i < nF; i++) {
+    flecks.push({ a: r() * TAU, dist: between(1.6, 3.8), size: between(0.7, 2) * sc, wob: r() * TAU });
+  }
+  const shootMs = between(80, 140);
+  const holdMs = between(50, 110);
 
-  return { harmonics, tendrils, fibre, specks, drops, splash, r0, weight, wobbleSpeed: between(0.8, 1.6) };
+  return {
+    harmonics,
+    tendrils,
+    fibre,
+    specks,
+    drops,
+    core,
+    rays,
+    flecks,
+    r0,
+    weight,
+    shootMs,
+    holdMs,
+    wobbleSpeed: between(0.8, 1.6),
+  };
 }
 
 function radiusAt(shape, theta, p, layer) {
@@ -132,6 +194,123 @@ function pop(t) {
   const c = 1.4;
   const x = clamp01(t) - 1;
   return 1 + (c + 1) * x * x * x + c * x * x;
+}
+
+const easeOut = (t) => 1 - Math.pow(1 - clamp01(t), 3);
+
+/** Small wobbly blot (never a perfect oval), feathered with a faint halo */
+function blot(ctx, x, y, r, rot, stretch, wob, alpha) {
+  if (r < 0.3) return;
+  for (let pass = 0; pass < 2; pass++) {
+    const rr = pass === 0 ? r * 1.35 + 0.8 : r;
+    ctx.fillStyle = `rgba(0,0,0,${pass === 0 ? alpha * 0.28 : alpha})`;
+    ctx.beginPath();
+    const n = 14;
+    for (let i = 0; i <= n; i++) {
+      const th = (i / n) * TAU;
+      const f = 1 + 0.16 * Math.sin(3 * th + wob) + 0.09 * Math.sin(5 * th + wob * 2.3);
+      const lx = Math.cos(th) * rr * f * stretch;
+      const ly = Math.sin(th) * rr * f / Math.sqrt(stretch);
+      const px = x + lx * Math.cos(rot) - ly * Math.sin(rot);
+      const py = y + lx * Math.sin(rot) + ly * Math.cos(rot);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+  }
+}
+
+/**
+ * The impact: core blot, streaks, beads and droplets. `ms` is time since the
+ * drop landed. Everything stays put after the spray settles; the growing
+ * stain (feathered edge) absorbs it gradually as it passes.
+ */
+function drawSplash(ctx, s, ms) {
+  const { shape, x: cx, y: cy } = s;
+  if (ms <= 0) return;
+  const r0 = shape.r0;
+
+  // Core: pops in with a damped squash along a random axis, then soaks a bit
+  const c = shape.core;
+  const k = ms / c.popMs;
+  const grow = pop(k) * (1 + 0.12 * clamp01((ms - c.popMs) / 400));
+  const sq = 0.28 * Math.cos(Math.PI * k) * Math.exp(-k * 1.3);
+  const sx = 1 + sq;
+  const sy = 1 - sq * 0.7;
+  const ca = Math.cos(c.squashAxis);
+  const sa = Math.sin(c.squashAxis);
+  for (let pass = 0; pass < 3; pass++) {
+    const spread = [1.12, 1.05, 1][pass];
+    ctx.fillStyle = `rgba(0,0,0,${[0.18, 0.35, 1][pass]})`;
+    ctx.beginPath();
+    const n = 72;
+    for (let i = 0; i <= n; i++) {
+      const th = (i / n) * TAU;
+      let f = 1;
+      for (const w of c.wob) f += w.amp * Math.sin(w.k * th + w.phase + pass * 0.7);
+      const rr = r0 * grow * f * spread;
+      const lx = Math.cos(th) * rr * sx;
+      const ly = Math.sin(th) * rr * sy;
+      const px = cx + lx * ca - ly * sa;
+      const py = cy + lx * sa + ly * ca;
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Crown: tapering streaks shot out from the core edge
+  const shoot = ms / shape.shootMs;
+  if (shoot <= 0) return;
+  for (const ray of shape.rays) {
+    const e = easeOut(shoot * ray.speed);
+    if (e <= 0) continue;
+    const ux = Math.cos(ray.a);
+    const uy = Math.sin(ray.a);
+    const start = r0 * 0.55;
+    const len = ray.len * e;
+    const at = (t) => {
+      const ang = ray.a + ray.bend * t * t;
+      const d = start + (r0 * 0.45 + len) * t;
+      return [cx + Math.cos(ang) * d, cy + Math.sin(ang) * d, ang];
+    };
+    const segs = 12;
+    for (let pass = 0; pass < 2; pass++) {
+      const wmul = pass === 0 ? 1.45 : 1;
+      ctx.fillStyle = `rgba(0,0,0,${pass === 0 ? 0.22 : 1})`;
+      ctx.beginPath();
+      const left = [];
+      const right = [];
+      for (let i = 0; i <= segs; i++) {
+        const t = i / segs;
+        const [px, py, ang] = at(t);
+        // thick at the base, thin at the tip, with a slight pinch before the bead
+        const wdt = (ray.base * Math.pow(1 - t, 1.15) + ray.base * 0.1) * wmul * (0.9 + 0.1 * Math.sin(t * 9 + ray.wob));
+        const nx = -Math.sin(ang);
+        const ny = Math.cos(ang);
+        left.push([px + nx * wdt, py + ny * wdt]);
+        right.push([px - nx * wdt, py - ny * wdt]);
+      }
+      left.forEach(([x, y], i) => (i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)));
+      for (let i = right.length - 1; i >= 0; i--) ctx.lineTo(right[i][0], right[i][1]);
+      ctx.closePath();
+      ctx.fill();
+    }
+    const [tx, ty] = at(1);
+    blot(ctx, tx, ty, ray.bead * Math.min(1, e * 1.4), ray.a, 1.15, ray.wob, 1);
+    // Detached droplets further out along the same ray, shrinking
+    for (const d of ray.droplets) {
+      const dd = (start + r0 * 0.45 + ray.len) * (1 + (d.dist - 1) * 1.1) * e;
+      blot(ctx, cx + ux * dd, cy + uy * dd, d.size * Math.min(1, e * 1.2), ray.a, 1.3, d.wob, 1);
+    }
+  }
+  for (const f of shape.flecks) {
+    const e = easeOut(shoot * 0.9);
+    const dd = r0 * f.dist * e;
+    blot(ctx, cx + Math.cos(f.a) * dd, cy + Math.sin(f.a) * dd, f.size * Math.min(1, e * 1.5), f.a, 1.2, f.wob, 0.9);
+  }
 }
 
 // Shapes and the coverage scale only depend on seeds + geometry, so cache
@@ -170,7 +349,7 @@ function coverScale(stains, w, h, key) {
         if (s.pc <= 0) continue;
         const d = Math.hypot(qx - s.x, qy - s.y);
         const f = Math.max(0.35, radiusAt(s.shape, Math.atan2(qy - s.y, qx - s.x), s.pc, 0));
-        need = Math.min(need, Math.max(0, d / f - s.shape.r0) / (s.shape.weight * s.pc));
+        need = Math.min(need, Math.max(0, d / f - s.shape.r0 * 0.8) / (s.shape.weight * s.pc));
       }
       if (need > k) k = need;
     }
@@ -181,10 +360,27 @@ function coverScale(stains, w, h, key) {
   return k;
 }
 
-function drawStain(ctx, s, R, p) {
+function drawStain(ctx, s, R, p, bleedPhase) {
   const { shape, x: cx, y: cy } = s;
   // ~6px edge segments at any size, so the fringe never looks faceted
   const steps = Math.round(Math.min(MAX_STEPS, Math.max(MIN_STEPS, (R * TAU) / 6)));
+  // Early on the stain wicks outward along the splash streaks first, so it
+  // takes them over from the base out rather than as a round blob
+  let bleed = null;
+  // (fades out once the stain is big enough that it no longer matters)
+  bleedPhase *= clamp01(1 - (R - 300) / 300);
+  if (bleedPhase > 0 && shape.rays.length) {
+    bleed = new Float32Array(steps + 1);
+    for (const ray of shape.rays) {
+      const reach = (shape.r0 * 0.45 + ray.len) * 0.9 * bleedPhase;
+      const sigma = Math.max(0.05, (ray.base * 1.8) / (shape.r0 + ray.len));
+      for (let i = 0; i <= steps; i++) {
+        let d = Math.abs((i / steps) * TAU - ray.a) % TAU;
+        if (d > Math.PI) d = TAU - d;
+        if (d < sigma * 4) bleed[i] += reach * Math.exp(-(d * d) / (2 * sigma * sigma));
+      }
+    }
+  }
   for (let l = LAYERS - 1; l >= 0; l--) {
     const spread = 1 + l * (0.008 + 0.015 * (1 - p));
     const alpha = l === 0 ? 1 : 0.28 * Math.pow(1 - l / LAYERS, 1.1);
@@ -192,7 +388,7 @@ function drawStain(ctx, s, R, p) {
     ctx.beginPath();
     for (let i = 0; i <= steps; i++) {
       const th = (i / steps) * TAU;
-      const rr = R * spread * radiusAt(shape, th, p, l);
+      const rr = (R * radiusAt(shape, th, p, l) + (bleed ? bleed[i] : 0)) * spread;
       const x = cx + Math.cos(th) * rr;
       const y = cy + Math.sin(th) * rr;
       if (i === 0) ctx.moveTo(x, y);
@@ -210,10 +406,7 @@ function drawStain(ctx, s, R, p) {
     const x = cx + Math.cos(d.a) * rr;
     const y = cy + Math.sin(d.a) * rr;
     const sz = R * d.size * Math.min(1, t);
-    ctx.fillStyle = `rgba(0,0,0,${0.35 + 0.5 * Math.min(1, t)})`;
-    ctx.beginPath();
-    ctx.ellipse(x, y, sz * 1.2, sz * 0.8, d.a, 0, TAU);
-    ctx.fill();
+    blot(ctx, x, y, sz, d.a, 1.3, d.a * 3.1, 0.35 + 0.5 * Math.min(1, t));
   }
 
   // Granulation: specks of pigment caught in the wet edge
@@ -229,27 +422,9 @@ function drawStain(ctx, s, R, p) {
   }
 }
 
-function drawSplash(ctx, s, t) {
-  const { shape, x: cx, y: cy } = s;
-  if (!shape.splash.length || t <= 0) return;
-  // Spray flies out in the first ~80ms of the drop's life, then sits there
-  // until the growing stain swallows it
-  const fly = pop(t / 0.045);
-  ctx.fillStyle = "#000";
-  for (const b of shape.splash) {
-    const rr = shape.r0 * (0.6 + (b.dist - 0.6) * fly);
-    const x = cx + Math.cos(b.a) * rr;
-    const y = cy + Math.sin(b.a) * rr;
-    const sz = b.size * Math.min(1, fly);
-    ctx.beginPath();
-    ctx.ellipse(x, y, sz * b.stretch, sz / Math.sqrt(b.stretch), b.a, 0, TAU);
-    ctx.fill();
-  }
-}
-
 class InkBloom {
   static get inputProperties() {
-    return ["--ink-p", "--ink-x", "--ink-y", "--ink-seed", "--ink-x2", "--ink-y2", "--ink-seed2", "--ink-d2", "--ink-ease"];
+    return ["--ink-p", "--ink-x", "--ink-y", "--ink-seed", "--ink-x2", "--ink-y2", "--ink-seed2", "--ink-d2", "--ink-ease", "--ink-dur"];
   }
 
   paint(ctx, size, props) {
@@ -269,20 +444,37 @@ class InkBloom {
     const seed1 = num(props, "--ink-seed", 1);
     const seed2 = num(props, "--ink-seed2", 2);
 
-    const local2 = (u) => clamp01((u - d2) / (1 - d2));
-    const stains = [
-      { shape: shapeFor(seed1, false), x: num(props, "--ink-x", w - 40), y: num(props, "--ink-y", 40), t, pc: bezier(CLEAR, x1, y1, x2) },
-      { shape: shapeFor(seed2, true), x: num(props, "--ink-x2", w * 0.15), y: num(props, "--ink-y2", h * 0.85), t: local2(t), pc: bezier(local2(CLEAR), x1, y1, x2) },
-    ];
-    const k = coverScale(stains, w, h, [seed1, seed2, w, h, stains[0].x, stains[0].y, stains[1].x, stains[1].y, d2, x1, y1, x2].join());
+    const dur = Math.max(600, num(props, "--ink-dur", 2000));
 
+    // Each drop: lands at `land` ms, splashes, holds, then its stain grows
+    // over the rest of the run. Growth time `tg` drives the soak curve.
+    const growth = (shape, land, ms) => {
+      const start = shape.shootMs + shape.holdMs;
+      return clamp01((ms - land - start) / (dur - land - start));
+    };
+    const stains = [
+      { shape: shapeFor(seed1, false), x: num(props, "--ink-x", w - 40), y: num(props, "--ink-y", 40), land: 0 },
+      { shape: shapeFor(seed2, true), x: num(props, "--ink-x2", w * 0.15), y: num(props, "--ink-y2", h * 0.85), land: d2 * dur },
+    ];
+    for (const s of stains) s.pc = bezier(growth(s.shape, s.land, CLEAR * dur), x1, y1, x2);
+    const k = coverScale(stains, w, h, [seed1, seed2, w, h, stains[0].x, stains[0].y, stains[1].x, stains[1].y, d2, dur, x1, y1, x2].join());
+
+    const ms = t * dur;
     for (const s of stains) {
-      if (s.t <= 0) continue;
-      const p = bezier(s.t, x1, y1, x2);
-      // The landing blot pops in at full r0 straight away; growth adds on top
-      const R = k * s.shape.weight * p + s.shape.r0 * pop(s.t / 0.05);
-      drawStain(ctx, s, R, p);
-      drawSplash(ctx, s, s.t);
+      const since = ms - s.land;
+      if (since <= 0) continue;
+      const tg = growth(s.shape, s.land, ms);
+      if (tg > 0) {
+        // Soft start: the stain seeps out of the core slowly for the first
+        // ~quarter of its growth, so it eats the streaks and droplets one by one
+        // instead of swallowing the splash whole. Coverage is unaffected
+        // (the ramp is done long before CLEAR).
+        const seep = Math.pow(clamp01(tg / 0.26), 1.8);
+        const p = bezier(tg, x1, y1, x2) * (0.12 + 0.88 * seep);
+        const R = k * s.shape.weight * p + s.shape.r0 * 0.8 * clamp01(tg * 8);
+        drawStain(ctx, s, R, p, clamp01(tg / 0.24));
+      }
+      drawSplash(ctx, s, since);
     }
 
     // Final soak: whatever is left fills in so the swap never pops
