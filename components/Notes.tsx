@@ -1,6 +1,13 @@
-import { notes } from "@/lib/content";
+import Link from "next/link";
+import { NotesList } from "@/components/NotesList";
+import { getAllNotes } from "@/lib/notes";
+
+const HOME_COUNT = 3;
 
 export function Notes() {
+  const notes = getAllNotes();
+  const latest = notes.slice(0, HOME_COUNT);
+
   return (
     <section
       id="notes"
@@ -15,44 +22,16 @@ export function Notes() {
       </h2>
       <hr className="section-rule mt-6 mb-12" />
 
-      <ul className="divide-y divide-rule">
-        {notes.map((note, i) => (
-          <li key={note.href}>
-            <a
-              href={note.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="note-link group block py-7"
-            >
-              <div className="flex items-baseline justify-between gap-6">
-                <span className="flex min-w-0 gap-5 sm:gap-8">
-                  <span
-                    aria-hidden
-                    className="pt-1 text-xs tabular-nums text-ink-faint"
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="min-w-0">
-                    <span className="font-display block text-xl leading-snug text-ink sm:text-2xl">
-                      {note.title}
-                    </span>
-                    <span className="mt-2 block max-w-xl text-[0.95rem] leading-relaxed text-ink-muted">
-                      {note.excerpt}
-                    </span>
-                  </span>
-                </span>
-                <span
-                  aria-hidden
-                  className="shrink-0 text-sm text-ink-faint transition-colors duration-200 group-hover:text-lagoon"
-                >
-                  →
-                </span>
-              </div>
-              <span className="sr-only"> (opens in new tab)</span>
-            </a>
-          </li>
-        ))}
-      </ul>
+      <NotesList notes={latest} />
+
+      <p className="mt-8 border-t border-rule pt-7">
+        <Link
+          href="/notes"
+          className="quiet-link text-sm tracking-[0.04em] text-ink-muted"
+        >
+          All notes <span aria-hidden>→</span>
+        </Link>
+      </p>
     </section>
   );
 }

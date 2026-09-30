@@ -1,0 +1,71 @@
+---
+title: "So I deleted my client’s database, what now?"
+excerpt: "Yep, you read that right."
+date: "2025-08-24T10:21:53Z"
+canonical: "https://medium.com/@ecobbinahbuz/so-i-deleted-my-clients-database-what-now-a9de921fed2b"
+cover: "/notes/so-i-deleted-my-clients-database/cover.jpeg"
+---
+
+![](/notes/so-i-deleted-my-clients-database/cover.jpeg)
+
+Yep, you read that right.
+
+But before I take you back, let me give you the full context.
+
+It was mid-June 2025, and my first project had been live for a couple of months.
+
+The client requested a new feature to be added to the workflow.
+
+So I launch VSCode once again and dove headfirst into my old code base.
+
+The client wanted a way to add discounts and sales to products in the store.
+
+So I had to update the products table in the database to accept a sale_percent column for implementing that functionality.
+
+First, I updated the schema locally
+
+Now I had to make sure that it was in sync with the remote database.
+
+This was the tricky part, as I would soon find out, because in the case where your database already has data, running a migration would clear everything, assuming there was no seed file.
+
+And long story short, that’s exactly what happened.
+
+I ran the migration, reloaded the app, and the store that once displayed over 200 products now displayed: “No Products Added Yet, Please Check In Later”.
+
+I started sweating and then died.
+
+Quickly, I deployed the “Work in progress” page to the domain to hide what had happened from the client.
+
+Then it hit me, I killed the live data.
+
+I died again.
+
+I went for a walk. I needed some air because the only thing I could do at that moment was to question whether this was the end of my tech career.
+
+I came back to the remnants of what was once a beautiful and efficient system, trying to pick up the pieces of what remained.
+
+That’s when I remembered that [Neon](https://neon.com) (the cloud database provider I use) automatically backs up a database every 24 hours
+
+That was my saving grace.
+
+I immediately restored the most recent data, and just like that, the products were back.
+
+Looking back at it now, my mistake was how I treated the field and the migration.
+
+So how would I approach the same situation today?
+
+- I would make the sale_percent field an optional field (to make sure existing rows aren’t broken),
+- I would use `npx prisma migrate dev` locally to generate the migration file, then run `npx prisma migrate deploy` on production.
+- Finally, I would test migrations on a staging database before running on the real one.
+
+Now, would I still make mistakes? Probably, but I’d be breaking things in a controlled, reversible way.
+
+That day taught me something no tutorial ever could…
+
+> “Things will break; either by your hands or something else’s. What matters most is staying calm, acting fast, and learning in the process.”
+
+Bonus lesson: Always read the documentation of the tools you’re using, and don’t trust any tool blindly.
+
+Countdown to Github Anniversary (Day 8/30)
+
+**#softwareengineering** **#programming** **#developerdiaries** **#databaseadministration** **#productivity** **#artificialintelligence**

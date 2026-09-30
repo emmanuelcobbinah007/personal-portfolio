@@ -10,11 +10,11 @@ export const site = {
 };
 
 export const nav = [
-  { label: "Work", href: "#work" },
-  { label: "About", href: "#about" },
-  { label: "Resume", href: "#resume" },
-  { label: "Notes", href: "#notes" },
-  { label: "Contact", href: "#contact" },
+  { label: "Work", href: "/#work" },
+  { label: "About", href: "/#about" },
+  { label: "Resume", href: "/#resume" },
+  { label: "Notes", href: "/#notes" },
+  { label: "Contact", href: "/#contact" },
 ] as const;
 
 export const work = [
@@ -85,24 +85,7 @@ export const about = {
   ],
 };
 
-export const notes = [
-  {
-    title: "Nothing hurts more than watching your dreams die",
-    excerpt:
-      "In the past six months, I've built multiple products. Some survived. Most didn't.",
-    href: "https://medium.com/@ecobbinahbuz/nothing-hurts-more-than-watching-your-dreams-die-c256256268ee",
-  },
-  {
-    title: "I've spent 5 weeks building a SaaS and made -$1.81 MRR",
-    excerpt: "Wait, let me explain.",
-    href: "https://medium.com/@ecobbinahbuz/ive-spent-5-weeks-building-a-saas-and-made-1-81-mrr-3a323ecc6918",
-  },
-  {
-    title: "So I deleted my client's database. What now?",
-    excerpt: "Yep, you read that right.",
-    href: "https://medium.com/@ecobbinahbuz/so-i-deleted-my-clients-database-what-now-a9de921fed2b",
-  },
-] as const;
+// Notes now live in content/notes/*.mdx (see lib/notes.ts).
 
 
 export const resume = {
