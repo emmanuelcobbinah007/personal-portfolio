@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { nav, site } from "@/lib/content";
 
 /** Nav items that have their own page, and where that page lives. */
@@ -43,6 +44,9 @@ export function Nav({ section }: { section?: keyof typeof sectionPages } = {}) {
               </li>
             );
           })}
+          <li className="shrink-0">
+            <ThemeToggle />
+          </li>
         </ul>
       </nav>
     </header>
