@@ -57,12 +57,24 @@ export function preloadInkBloom(): void {
     });
 }
 
-const BLOOM_VARS = ["--ink-x", "--ink-y", "--ink-seed"] as const;
+const BLOOM_VARS = [
+  "--ink-x",
+  "--ink-y",
+  "--ink-seed",
+  "--ink-x2",
+  "--ink-y2",
+  "--ink-seed2",
+  "--ink-d2",
+  "--ink-ease",
+] as const;
+
+const rand = (a: number, b: number) => a + (b - a) * Math.random();
 
 /**
- * Switch theme. With View Transitions + CSS Paint the new theme soaks in as an
- * ink bloom from `origin`; with View Transitions only it crossfades; otherwise
- * (or under reduced motion) it swaps instantly.
+ * Switch theme. With View Transitions + CSS Paint the new theme soaks in as
+ * two ink drops: one from `origin` (the toggle) and a second that lands
+ * somewhere bottom-left a beat later. With View Transitions only it
+ * crossfades; otherwise (or under reduced motion) it swaps instantly.
  */
 export function setTheme(next: Theme, origin?: { x: number; y: number }) {
   const root = document.documentElement;
@@ -73,19 +85,34 @@ export function setTheme(next: Theme, origin?: { x: number; y: number }) {
   }
 
   const painterly = workletReady;
-  const x = origin?.x ?? window.innerWidth - 40;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const x = origin?.x ?? w - 40;
   const y = origin?.y ?? 40;
-  // Fresh randomness every time: shape seed, duration and soak curve
+
+  // Fresh randomness every time: two shape seeds, where the second drop
+  // lands, when it lands, how long the whole thing takes, and the soak curve.
   const seed = Math.floor(Math.random() * 2 ** 31);
-  const duration = 1300 + Math.random() * 300;
-  // Quick start, long soak. Radius eases out; area (~r^2) reads near-linear.
-  const e1 = (0.26 + Math.random() * 0.08).toFixed(3);
-  const e2 = (0.24 + Math.random() * 0.1).toFixed(3);
-  const e3 = (0.42 + Math.random() * 0.1).toFixed(3);
+  const seed2 = Math.floor(Math.random() * 2 ** 31);
+  const x2 = w * rand(0.05, 0.3);
+  const y2 = h * rand(0.7, 0.95);
+  const duration = rand(1800, 2200);
+  const delay = rand(120, 300);
+  // Quick-then-soaking, with a softer start than a plain ease-out. The
+  // worklet evaluates this curve itself (the animation runs linearly) so the
+  // second drop's delay stays in real time.
+  const ease = [rand(0.3, 0.38), rand(0.14, 0.24), rand(0.42, 0.52)]
+    .map((n) => n.toFixed(3))
+    .join(" ");
 
   root.style.setProperty("--ink-x", String(Math.round(x)));
   root.style.setProperty("--ink-y", String(Math.round(y)));
   root.style.setProperty("--ink-seed", String(seed));
+  root.style.setProperty("--ink-x2", String(Math.round(x2)));
+  root.style.setProperty("--ink-y2", String(Math.round(y2)));
+  root.style.setProperty("--ink-seed2", String(seed2));
+  root.style.setProperty("--ink-d2", (delay / duration).toFixed(4));
+  root.style.setProperty("--ink-ease", ease);
   root.classList.add(painterly ? "ink-bloom" : "ink-fade");
 
   const vt = document.startViewTransition(() => applyTheme(next));
@@ -97,7 +124,7 @@ export function setTheme(next: Theme, origin?: { x: number; y: number }) {
           { "--ink-p": [0, 1] },
           {
             duration,
-            easing: `cubic-bezier(${e1}, ${e2}, ${e3}, 1)`,
+            easing: "linear",
             pseudoElement: "::view-transition-new(root)",
             fill: "both",
           },
