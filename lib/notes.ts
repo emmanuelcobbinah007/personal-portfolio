@@ -10,8 +10,10 @@ export type NoteMeta = {
   excerpt: string;
   /** ISO 8601 date string */
   date: string;
-  /** Original URL when the note was first published elsewhere (e.g. Medium) */
+  /** Optional canonical override. Defaults to the note's own page on this site. */
   canonical?: string;
+  /** Where the note was first published (e.g. Medium), shown as a credit link */
+  originalUrl?: string;
   /** Link-out only entries have no body and point to `href` */
   external: boolean;
   href: string;
@@ -29,6 +31,7 @@ type Frontmatter = {
   date?: string | Date;
   canonical?: string;
   medium?: string;
+  original?: string;
   external?: boolean;
   href?: string;
   cover?: string;
@@ -66,14 +69,14 @@ function parse(file: string): Note {
     throw new Error(`External note "${file}" needs an href`);
   }
 
-  const canonical = fm.canonical ?? fm.medium;
 
   return {
     slug,
     title: fm.title,
     excerpt: fm.excerpt ?? "",
     date: toIso(fm.date, file),
-    canonical,
+    canonical: fm.canonical,
+    originalUrl: fm.medium ?? fm.original,
     external,
     href: external ? (fm.href as string) : `/notes/${slug}`,
     cover: fm.cover,

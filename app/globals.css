@@ -436,6 +436,11 @@ html.loader-lock {
   transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Already played this browser session (class set pre-paint in layout.tsx) */
+html.loader-seen .signature-loader {
+  display: none;
+}
+
 .signature-loader.is-leaving {
   opacity: 0;
   pointer-events: none;

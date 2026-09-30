@@ -96,6 +96,10 @@ export const metadata: Metadata = {
   category: "technology",
 };
 
+// Runs before first paint: hides the intro loader if it already played this
+// session. Must stay in sync with LOADER_SEEN_KEY in SignatureLoader.tsx.
+const loaderSeenScript = `try{if(sessionStorage.getItem("mrcob-loader-seen")==="1")document.documentElement.classList.add("loader-seen")}catch(e){}`;
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -141,9 +145,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={`${instrumentSerif.variable} ${dmSans.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-parchment text-ink font-sans">
+        <script dangerouslySetInnerHTML={{ __html: loaderSeenScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

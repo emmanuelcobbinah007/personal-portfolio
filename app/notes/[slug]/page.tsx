@@ -29,15 +29,16 @@ export async function generateMetadata({
   if (!note) return {};
 
   const path = `/notes/${note.slug}`;
+  const canonical = note.canonical ?? `${siteUrl}${path}`;
   const image = note.cover ?? "/og.png";
 
   return {
     title: note.title,
     description: note.excerpt,
-    alternates: { canonical: note.canonical ?? path },
+    alternates: { canonical },
     openGraph: {
       type: "article",
-      url: path,
+      url: canonical,
       title: note.title,
       description: note.excerpt,
       publishedTime: note.date,
@@ -75,6 +76,7 @@ export default async function NotePage({
     datePublished: note.date,
     url,
     mainEntityOfPage: note.canonical ?? url,
+    ...(note.originalUrl ? { sameAs: note.originalUrl } : {}),
     ...(note.cover ? { image: `${siteUrl}${note.cover}` } : {}),
     author: { "@type": "Person", name: site.name, url: siteUrl },
   };
@@ -114,13 +116,13 @@ export default async function NotePage({
             </div>
 
             <footer className="mt-14">
-              {note.canonical && (
+              {note.originalUrl && (
                 <aside className="note-origin text-[0.9rem] leading-relaxed text-ink-muted">
-                  {isMedium(note.canonical)
+                  {isMedium(note.originalUrl)
                     ? "Originally published on Medium. "
                     : "Originally published elsewhere. "}
                   <a
-                    href={note.canonical}
+                    href={note.originalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-ink underline decoration-rule underline-offset-4 transition-colors hover:text-lagoon"

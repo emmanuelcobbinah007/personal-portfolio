@@ -3,8 +3,30 @@
 import { signaturePaths, signatureViewBox } from "@/lib/signaturePaths";
 import { useEffect, useState } from "react";
 
+/** sessionStorage key; also read by the pre-paint script in app/layout.tsx. */
+export const LOADER_SEEN_KEY = "mrcob-loader-seen";
+
+function markSeen() {
+  try {
+    sessionStorage.setItem(LOADER_SEEN_KEY, "1");
+  } catch {
+    /* storage unavailable: loader simply plays again next load */
+  }
+}
+
+function hasSeen() {
+  try {
+    return sessionStorage.getItem(LOADER_SEEN_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
 /**
- * Parchment intro: signature draws once per page load, then fades out.
+ * Parchment intro: signature draws once per browser session, then fades out.
+ * Repeat visits are hidden before paint by the `loader-seen` class that the
+ * inline script in app/layout.tsx sets on <html> (see globals.css), so the
+ * server markup stays identical and hydration is unaffected.
  * Skips animation when prefers-reduced-motion.
  */
 export function SignatureLoader() {
@@ -16,6 +38,9 @@ export function SignatureLoader() {
       setPhase("done");
       return;
     }
+
+    // Already played this session: CSS keeps it hidden; nothing to animate.
+    if (hasSeen()) return;
 
     document.documentElement.classList.add("loader-lock");
 
@@ -31,6 +56,9 @@ export function SignatureLoader() {
 
     const leaveTimer = window.setTimeout(() => setPhase("leaving"), drawMs);
     const doneTimer = window.setTimeout(() => {
+      // Mark only once it has fully played, so an interrupted intro replays.
+      markSeen();
+      document.documentElement.classList.add("loader-seen");
       setPhase("done");
       document.documentElement.classList.remove("loader-lock", "loader-drawn");
     }, drawMs + fadeMs);
