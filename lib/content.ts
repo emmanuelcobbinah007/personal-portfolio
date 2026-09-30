@@ -17,63 +17,7 @@ export const nav = [
   { label: "Contact", href: "/#contact" },
 ] as const;
 
-export const work = [
-  {
-    id: "shopaurora",
-    name: "ShopAurora",
-    lead: true,
-    status: "Live",
-    blurb:
-      "WhatsApp and Instagram merchants get a real store, not another link-in-bio. Catalog, checkout, Mobile Money. Built for Accra first.",
-    href: "https://shopaurora.africa",
-    hrefLabel: "shopaurora.africa",
-    icon: null,
-  },
-  {
-    id: "pocket-f1",
-    name: "Pocket-F1",
-    lead: false,
-    status: "Live · multiplayer",
-    blurb:
-      "F1 party game for up to eight phones: lights out, tire strategy, mid-race chaos that has to stay identical on every device. CloudFront + S3 for the app; Lightsail keeps the race state and sockets alive. UI still catching up; the systems lesson was the point.",
-    href: "https://d2yrwsemu4iolt.cloudfront.net/",
-    hrefLabel: "d2yrwsemu4iolt.cloudfront.net",
-    icon: "f1-helmet",
-  },
-  {
-    id: "voteaurora",
-    name: "VoteAurora",
-    lead: false,
-    status: "Shipped",
-    blurb:
-      "Campus e-voting that actually ran. Honest product: ballots cast, results counted, drama reduced. Not a pitch deck.",
-    href: "https://vote-aurora.vercel.app",
-    hrefLabel: "vote-aurora.vercel.app",
-    icon: null,
-  },
-  {
-    id: "geniy",
-    name: "Geniy",
-    lead: false,
-    status: "Early",
-    blurb:
-      "Founder research and BI agent. Accepted into the AWS startup program. Still early: learning in public, not claiming product-market fit.",
-    href: "https://geniy-frontend.vercel.app",
-    hrefLabel: "geniy-frontend.vercel.app",
-    icon: null,
-  },
-  {
-    id: "artifact",
-    name: "Artifact",
-    lead: false,
-    status: "In progress",
-    blurb:
-      "Idea → prompt → PR. The landing is still flaky. I'm shipping the loop, not the brochure.",
-    href: null,
-    hrefLabel: null,
-    icon: null,
-  },
-] as const;
+// Projects (home Work + /projects) live in lib/projects.ts.
 
 export const about = {
   salutation: "Hey,",

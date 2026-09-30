@@ -2,11 +2,19 @@ import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 import { nav, site } from "@/lib/content";
 
+/** Nav items that have their own page, and where that page lives. */
+const sectionPages = {
+  notes: { label: "Notes", href: "/notes" },
+  projects: { label: "Work", href: "/projects" },
+} as const;
+
 /**
  * `section` marks the page the nav is rendered on. On /notes pages the Notes
- * item points to the index instead of the home anchor.
+ * item points to the notes index; on /projects the Work item points there.
+ * Everything else uses the home anchors (/#work etc.), so it works anywhere.
  */
-export function Nav({ section }: { section?: "notes" } = {}) {
+export function Nav({ section }: { section?: keyof typeof sectionPages } = {}) {
+  const current = section ? sectionPages[section] : undefined;
   return (
     <header className="fade-in">
       <nav
@@ -22,11 +30,11 @@ export function Nav({ section }: { section?: "notes" } = {}) {
         </Link>
         <ul className="flex w-full items-center justify-between gap-x-3 sm:w-auto sm:justify-end sm:gap-x-7">
           {nav.map((item) => {
-            const isCurrent = section === "notes" && item.label === "Notes";
+            const isCurrent = current?.label === item.label;
             return (
               <li key={item.href} className="shrink-0">
                 <Link
-                  href={isCurrent ? "/notes" : item.href}
+                  href={isCurrent && current ? current.href : item.href}
                   aria-current={isCurrent ? "page" : undefined}
                   className="nav-link text-[0.75rem] tracking-[0.04em] sm:text-[0.8125rem]"
                 >
