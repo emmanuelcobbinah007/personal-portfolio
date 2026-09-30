@@ -85,7 +85,7 @@ export const projects = [
     lead: false,
     status: "System design · 01",
     blurb:
-      "I built a load balancer just to feel something. First in a system design series where I build the pieces I usually just use. TypeScript and Express: every request goes to the healthy server with the fewest open connections, and ties take turns. Health checks run every five seconds, a new server gets no traffic until it passes one, and if nobody's up you get a 503. Runs locally against stand-in backends. No live demo.",
+      "I built this to practice the system design I’ve been studying, and to feel something again. An HTTP load balancer in TypeScript on Node’s http module. Every request goes to the healthy server doing the least work right now, and ties take turns. Health checks run every five seconds, dead servers get no traffic until they recover, and when nothing’s healthy it fails politely with a 503. It won’t replace nginx. It might replace your weekend.",
     href: "https://github.com/emmanuelcobbinah007/project-load-balancer",
     hrefLabel: "github.com/emmanuelcobbinah007/project-load-balancer",
     icon: "load-balancer",
