@@ -741,8 +741,9 @@ html.loader-drawn .signature-loader-stroke {
 
 .note-prose img {
   display: block;
-  width: 100%;
+  max-width: 100%;
   height: auto;
+  margin-inline: auto;
   border-radius: 0.25rem;
   margin-block: 2em;
 }
@@ -753,6 +754,30 @@ html.loader-drawn .signature-loader-stroke {
 
 .note-prose > p > img:only-child {
   margin-block: 0;
+}
+
+.note-prose figure {
+  margin-block: 2em;
+}
+
+.note-prose figure img {
+  margin-block: 0;
+}
+
+.note-prose figcaption {
+  margin-top: 0.75rem;
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--ink-faint);
+}
+
+.note-prose figcaption p {
+  margin: 0;
+}
+
+.note-prose figcaption a {
+  color: inherit;
 }
 
 .note-prose hr {
