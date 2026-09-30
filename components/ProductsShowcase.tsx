@@ -2,17 +2,21 @@ import { F1Helmet } from "@/components/F1Helmet";
 import { itemLinks, ProjectCopy, ProjectLinks } from "@/components/ProjectParts";
 import { RevealWords } from "@/components/RevealWords";
 import { ShopStorefront } from "@/components/ShopStorefront";
+import { LoadBalancerSketch } from "@/components/LoadBalancerSketch";
 import { VoteBallotBox } from "@/components/VoteBallotBox";
-import { work } from "@/lib/projects";
+import { systemDesign, work } from "@/lib/projects";
 
 /**
  * The products layout: ShopAurora lead, Pocket-F1, the text-only pair, then
  * VoteAurora. Shared by the home Work section and /projects.
  */
-export function ProductsShowcase() {
+export function ProductsShowcase({ home = false }: { home?: boolean }) {
   const [lead, ...rest] = work;
   const pocket = rest.find((item) => item.id === "pocket-f1");
-  const vote = rest.find((item) => item.id === "voteaurora");
+  const vote = home
+    ? systemDesign.find((item) => item.id === "load-balancer")
+    : rest.find((item) => item.id === "voteaurora");
+  const ClosingSketch = home ? LoadBalancerSketch : VoteBallotBox;
   const grid = rest.filter(
     (item) => item.id !== "pocket-f1" && item.id !== "voteaurora",
   );
@@ -79,7 +83,7 @@ export function ProductsShowcase() {
         <article className="work-card mt-16 lg:mt-20">
           {/* Mobile: sketch on top; desktop: ballot left, copy right (like ShopAurora) */}
           <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
-            <VoteBallotBox className="shrink-0 lg:w-[42%]" />
+            <ClosingSketch className="shrink-0 lg:w-[42%]" />
             <ProjectCopy
               name={vote.name}
               status={vote.status}

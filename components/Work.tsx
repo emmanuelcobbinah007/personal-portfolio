@@ -20,7 +20,7 @@ export function Work() {
 
       <hr className="section-rule mt-6 mb-12" />
 
-      <ProductsShowcase />
+      <ProductsShowcase home />
 
       <p className="mt-16 border-t border-rule pt-7 lg:mt-20">
         <Link
