@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/content";
+import { InkCursor } from "@/components/InkCursor";
 
 const instrumentSerif = Instrument_Serif({
   weight: "400",
@@ -148,6 +149,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         {children}
+        <InkCursor />
       </body>
     </html>
   );

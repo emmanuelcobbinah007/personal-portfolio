@@ -19,7 +19,12 @@ export function BlackStarBridge({ className = "" }: { className?: string }) {
     <div
       className={`mx-auto w-full max-w-[90rem] overflow-hidden ${className}`.trim()}
     >
-      <div ref={ref} className="helmet-sketch is-sketched w-full" aria-hidden>
+      <div
+        ref={ref}
+        className="helmet-sketch is-sketched w-full"
+        data-cursor="pen"
+        aria-hidden
+      >
         {/*
           Mobile: oversized + translate left so the Arch (right side of the
           viewBox) enters the screen. Desktop: full banner, no shift.

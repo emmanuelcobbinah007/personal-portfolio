@@ -11,6 +11,7 @@ export function F1Helmet({ className = "" }: { className?: string }) {
     <div
       ref={ref}
       className={`helmet-sketch ${className}`.trim()}
+      data-cursor="pen"
       aria-hidden
     >
       <svg
