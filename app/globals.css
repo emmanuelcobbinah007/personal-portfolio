@@ -823,7 +823,8 @@ html.loader-drawn .signature-loader-stroke {
 
 /* ---------- Theme toggle (hand-drawn sun / moon) ---------- */
 .theme-toggle {
-  display: inline-grid;
+  display: grid;
+  vertical-align: middle;
   place-items: center;
   width: 2rem;
   height: 2rem;
@@ -847,8 +848,11 @@ html.loader-drawn .signature-loader-stroke {
 }
 
 .theme-toggle svg {
+  display: block;
   width: 1.15rem;
   height: 1.15rem;
+  /* optical: sit on the nav text's x-height, not its line box */
+  translate: 0 0.14rem;
   overflow: visible;
 }
 

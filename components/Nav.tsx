@@ -44,7 +44,7 @@ export function Nav({ section }: { section?: keyof typeof sectionPages } = {}) {
               </li>
             );
           })}
-          <li className="shrink-0">
+          <li className="flex shrink-0 items-center">
             <ThemeToggle />
           </li>
         </ul>
