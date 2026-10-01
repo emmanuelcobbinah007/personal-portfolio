@@ -8,6 +8,10 @@
  * through it. --ink-p runs linearly; --ink-ease ("x1 y1 x2") is the soak
  * curve, evaluated here so the second drop's delay stays in real time.
  *
+ * Chrome draws this live only as a fallback: normally the same drawing code
+ * runs ahead of time in a worker (ink-bloom-frames-worker.js), which bakes
+ * the frames into small images that the transition just flips through.
+ *
  * Pure function of its inputs (Chrome runs several worklet scopes and may
  * repaint any frame), so every random choice comes from the seeds.
  */
@@ -422,6 +426,61 @@ function drawStain(ctx, s, R, p, bleedPhase) {
   }
 }
 
+/**
+ * Everything one bloom needs that does not change frame to frame: the two
+ * stains (shape, landing point, landing time), the soak curve and the growth
+ * scale. `get(name, fallback)` reads a numeric input; `ease` is "x1 y1 x2".
+ * Shared by the paint worklet below and the frame renderer worker
+ * (ink-bloom-frames-worker.js), so both draw exactly the same ink.
+ */
+function bloomSetup(get, easeRaw, w, h) {
+  const e = (easeRaw || "").trim().split(/\s+/).map(parseFloat);
+  const [x1, y1, x2] = e.length === 3 && e.every(Number.isFinite) ? e : [0.34, 0.2, 0.46];
+  const d2 = Math.min(0.3, Math.max(0, get("--ink-d2", 0.1)));
+  const seed1 = get("--ink-seed", 1);
+  const seed2 = get("--ink-seed2", 2);
+  const dur = Math.max(600, get("--ink-dur", 2000));
+  const B = { w, h, dur, x1, y1, x2, k: 0, stains: null };
+  B.stains = [
+    { shape: shapeFor(seed1, false), x: get("--ink-x", w - 40), y: get("--ink-y", 40), land: 0 },
+    { shape: shapeFor(seed2, true), x: get("--ink-x2", w * 0.15), y: get("--ink-y2", h * 0.85), land: d2 * dur },
+  ];
+  for (const s of B.stains) s.pc = bezier(growthAt(B, s, CLEAR * dur), x1, y1, x2);
+  B.k = coverScale(B.stains, w, h, [seed1, seed2, w, h, B.stains[0].x, B.stains[0].y, B.stains[1].x, B.stains[1].y, d2, dur, x1, y1, x2].join());
+  return B;
+}
+
+// Each drop: lands at `land` ms, splashes, holds, then its stain grows over
+// the rest of the run. Growth time `tg` drives the soak curve.
+function growthAt(B, s, ms) {
+  const start = s.shape.shootMs + s.shape.holdMs;
+  return clamp01((ms - s.land - start) / (B.dur - s.land - start));
+}
+
+/** One drop (stain + splash) at run progress t (0..1, linear time). */
+function drawDrop(ctx, B, s, t) {
+  const ms = t * B.dur;
+  const since = ms - s.land;
+  if (since <= 0) return;
+  const tg = growthAt(B, s, ms);
+  if (tg > 0) {
+    // Soft start: the stain seeps out of the core slowly for the first
+    // ~quarter of its growth, so it eats the streaks and droplets one by one
+    // instead of swallowing the splash whole. Coverage is unaffected
+    // (the ramp is done long before CLEAR).
+    const seep = Math.pow(clamp01(tg / 0.26), 1.8);
+    const p = bezier(tg, B.x1, B.y1, B.x2) * (0.12 + 0.88 * seep);
+    const R = B.k * s.shape.weight * p + s.shape.r0 * 0.8 * clamp01(tg * 8);
+    drawStain(ctx, s, R, p, clamp01(tg / 0.24));
+  }
+  drawSplash(ctx, s, since);
+}
+
+/** Final soak: whatever is left fills in so the swap never pops. */
+function soakAlpha(t) {
+  return t > CLEAR - 0.02 ? clamp01((t - (CLEAR - 0.02)) / (1 - CLEAR + 0.02)) : 0;
+}
+
 class InkBloom {
   static get inputProperties() {
     return ["--ink-p", "--ink-x", "--ink-y", "--ink-seed", "--ink-x2", "--ink-y2", "--ink-seed2", "--ink-d2", "--ink-ease", "--ink-dur"];
@@ -435,54 +494,17 @@ class InkBloom {
       ctx.fillRect(0, 0, size.width, size.height);
       return;
     }
-    const w = size.width;
-    const h = size.height;
     const easeRaw = props.get("--ink-ease");
-    const e = (easeRaw ? easeRaw.toString() : "").trim().split(/\s+/).map(parseFloat);
-    const [x1, y1, x2] = e.length === 3 && e.every(Number.isFinite) ? e : [0.34, 0.2, 0.46];
-    const d2 = Math.min(0.3, Math.max(0, num(props, "--ink-d2", 0.1)));
-    const seed1 = num(props, "--ink-seed", 1);
-    const seed2 = num(props, "--ink-seed2", 2);
-
-    const dur = Math.max(600, num(props, "--ink-dur", 2000));
-
-    // Each drop: lands at `land` ms, splashes, holds, then its stain grows
-    // over the rest of the run. Growth time `tg` drives the soak curve.
-    const growth = (shape, land, ms) => {
-      const start = shape.shootMs + shape.holdMs;
-      return clamp01((ms - land - start) / (dur - land - start));
-    };
-    const stains = [
-      { shape: shapeFor(seed1, false), x: num(props, "--ink-x", w - 40), y: num(props, "--ink-y", 40), land: 0 },
-      { shape: shapeFor(seed2, true), x: num(props, "--ink-x2", w * 0.15), y: num(props, "--ink-y2", h * 0.85), land: d2 * dur },
-    ];
-    for (const s of stains) s.pc = bezier(growth(s.shape, s.land, CLEAR * dur), x1, y1, x2);
-    const k = coverScale(stains, w, h, [seed1, seed2, w, h, stains[0].x, stains[0].y, stains[1].x, stains[1].y, d2, dur, x1, y1, x2].join());
-
-    const ms = t * dur;
-    for (const s of stains) {
-      const since = ms - s.land;
-      if (since <= 0) continue;
-      const tg = growth(s.shape, s.land, ms);
-      if (tg > 0) {
-        // Soft start: the stain seeps out of the core slowly for the first
-        // ~quarter of its growth, so it eats the streaks and droplets one by one
-        // instead of swallowing the splash whole. Coverage is unaffected
-        // (the ramp is done long before CLEAR).
-        const seep = Math.pow(clamp01(tg / 0.26), 1.8);
-        const p = bezier(tg, x1, y1, x2) * (0.12 + 0.88 * seep);
-        const R = k * s.shape.weight * p + s.shape.r0 * 0.8 * clamp01(tg * 8);
-        drawStain(ctx, s, R, p, clamp01(tg / 0.24));
-      }
-      drawSplash(ctx, s, since);
-    }
-
-    // Final soak: whatever is left fills in so the swap never pops
-    if (t > CLEAR - 0.02) {
-      ctx.fillStyle = `rgba(0,0,0,${clamp01((t - (CLEAR - 0.02)) / (1 - CLEAR + 0.02))})`;
-      ctx.fillRect(0, 0, w, h);
+    const B = bloomSetup((n, f) => num(props, n, f), easeRaw ? easeRaw.toString() : "", size.width, size.height);
+    for (const s of B.stains) drawDrop(ctx, B, s, t);
+    const a = soakAlpha(t);
+    if (a > 0) {
+      ctx.fillStyle = `rgba(0,0,0,${a})`;
+      ctx.fillRect(0, 0, size.width, size.height);
     }
   }
 }
 
-registerPaint("ink-bloom", InkBloom);
+// Also loaded with importScripts() by the frame renderer worker, where there
+// is no registerPaint.
+if (typeof registerPaint === "function") registerPaint("ink-bloom", InkBloom);

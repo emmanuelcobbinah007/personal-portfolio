@@ -897,7 +897,8 @@ html.loader-drawn .signature-loader-stroke {
   mix-blend-mode: normal;
 }
 
-/* Painterly path: the new theme soaks in through a paint-worklet mask */
+/* Live path: the new theme soaks in through a paint-worklet mask (used when
+   no baked bloom is ready yet) */
 html.ink-bloom::view-transition-old(root),
 html.ink-bloom::view-transition-new(root) {
   animation: none;
@@ -908,6 +909,18 @@ html.ink-bloom::view-transition-new(root) {
   mask-image: paint(ink-bloom);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
+}
+
+/* Baked path: the same ink, rendered ahead of time in a worker; the run
+   only flips mask images (set per frame from lib/theme.ts) */
+html.ink-frames::view-transition-old(root),
+html.ink-frames::view-transition-new(root) {
+  animation: none;
+}
+
+html.ink-frames::view-transition-new(root) {
+  mask-image: linear-gradient(transparent, transparent);
+  mask-repeat: no-repeat;
 }
 
 /* Fallback path (View Transitions without CSS Paint): a quiet crossfade */

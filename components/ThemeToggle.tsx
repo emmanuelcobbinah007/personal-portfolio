@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import {
   preloadInkBloom,
   readTheme,
@@ -21,13 +21,21 @@ export function ThemeToggle() {
     () => null,
   );
   const isDark = theme === "dark";
+  const ref = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    preloadInkBloom();
+    // The next bloom is baked ahead of time from where the toggle sits
+    preloadInkBloom(() => {
+      const el = ref.current;
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    });
   }, []);
 
   return (
     <button
+      ref={ref}
       type="button"
       className="theme-toggle"
       aria-label="Dark mode"
