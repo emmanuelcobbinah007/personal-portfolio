@@ -23,7 +23,17 @@ export function subscribeTheme(onChange: () => void): () => void {
   return () => mo.disconnect();
 }
 
+// The theme a switch is heading to, until its DOM update has run (a View
+// Transition applies it a frame or two after the click)
+let pendingTheme: Theme | null = null;
+
+/** Where the theme is going: the pending switch's target, else the current one. */
+export function targetTheme(): Theme {
+  return pendingTheme ?? readTheme();
+}
+
 function applyTheme(theme: Theme) {
+  if (pendingTheme === theme) pendingTheme = null;
   const root = document.documentElement;
   root.dataset.theme = theme;
   try {
@@ -73,7 +83,10 @@ const MARGIN = 64; // px the toggle may move (scroll) and still reuse a bake
 const EMPTY = "linear-gradient(transparent, transparent)";
 
 let worker: Worker | null = null;
-let baked: BakedBloom | null = null;
+// A small pool, so a quick switch back still finds a bloom ready
+const POOL = 2;
+let pool: BakedBloom[] = [];
+let generation = 0; // bumps on every switch; only the latest one cleans up
 let baking = 0; // id of the bake in flight, 0 when idle
 let bakeTimer = 0;
 let bakingOrigin: Point | null = null;
@@ -137,9 +150,9 @@ function release(b: { urls: string[]; warm: HTMLElement }) {
   for (const u of b.urls) URL.revokeObjectURL(u);
 }
 
-function discardBake() {
-  if (baked) release(baked);
-  baked = null;
+function discardBakes() {
+  for (const b of pool) release(b);
+  pool = [];
 }
 
 function loadImage(url: string): Promise<HTMLImageElement> {
@@ -221,9 +234,9 @@ async function toFrames(
   return frames;
 }
 
-/** Bake the next bloom in the background (no-op if one is ready or baking). */
+/** Bake the next bloom in the background (no-op if the pool is full or busy). */
 function bake() {
-  if (baked || baking || !canBake()) return;
+  if (pool.length >= POOL || baking || !canBake()) return;
   const origin = getOrigin?.() ?? undefined;
   // Toggle scrolled out of view: nothing to click, bake once it is back
   if (origin && !inView(origin)) return;
@@ -252,11 +265,15 @@ function bake() {
     try {
       const frames = await toFrames(raw, urls, warm, () => baking === id);
       if (baking !== id) throw new Error("stale");
-      baked = { ...bloom, frames, urls, warm, keyframes: bakedKeyframes(frames, { x: 0, y: 0 }) };
+      pool.push({ ...bloom, frames, urls, warm, keyframes: bakedKeyframes(frames, { x: 0, y: 0 }) });
     } catch {
       release({ urls, warm });
     }
-    if (baking === id) baking = 0;
+    if (baking === id) {
+      baking = 0;
+      // Top the pool up, unless a switch is running (it refills when done)
+      if (pool.length < POOL && !running) scheduleBake(200);
+    }
   };
   w.addEventListener("message", onMessage);
   w.postMessage({
@@ -298,7 +315,7 @@ function listen() {
       worker = null;
       baking = 0;
     }
-    discardBake();
+    discardBakes();
     scheduleBake(400);
   };
   window.addEventListener("resize", invalidate, { passive: true });
@@ -311,7 +328,7 @@ function listen() {
       scrollTimer = window.setTimeout(() => {
         const o = getOrigin?.();
         if (!o) return;
-        const at = baked?.origin ?? (baking ? bakingOrigin : null);
+        const at = pool[0]?.origin ?? (baking ? bakingOrigin : null);
         if (!at) scheduleBake(300);
         else if (Math.abs(o.x - at.x) > MARGIN || Math.abs(o.y - at.y) > MARGIN) invalidate();
       }, 150);
@@ -395,6 +412,21 @@ function bakedKeyframes(frames: Frame[], shift: Point): Keyframe[] {
  * with the paint worklet. Without CSS Paint it crossfades; without View
  * Transitions (or under reduced motion) it swaps instantly.
  */
+const MODES = ["ink-bloom", "ink-fade", "ink-frames"];
+const INK_VARS = ["--ink-x", "--ink-y", "--ink-seed", "--ink-x2", "--ink-y2", "--ink-seed2", "--ink-d2", "--ink-ease", "--ink-dur"];
+let running = false;
+let inkAnim: Animation | null = null;
+
+function clearRoot() {
+  const root = document.documentElement;
+  // A mask animation targets ::view-transition-new(root) by name, so a
+  // skipped run's one would carry on masking the next run's snapshot
+  inkAnim?.cancel();
+  inkAnim = null;
+  root.classList.remove(...MODES);
+  for (const v of INK_VARS) root.style.removeProperty(v);
+}
+
 export function setTheme(next: Theme, origin?: Point) {
   const root = document.documentElement;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -402,10 +434,17 @@ export function setTheme(next: Theme, origin?: Point) {
     applyTheme(next);
     return;
   }
+  pendingTheme = next;
 
-  const ready = baked && bakeFits(baked, origin) ? baked : null;
-  if (ready) baked = null;
-  else discardBake(); // whatever was baked (if anything) no longer fits
+  // A switch while one is still running skips it; clear its mode and inputs
+  // now, so they can't clash with (or later be removed from under) this one
+  const gen = ++generation;
+  running = true;
+  clearRoot();
+
+  const fit = pool.findIndex((b) => bakeFits(b, origin));
+  const ready = fit >= 0 ? pool.splice(fit, 1)[0] : null;
+  if (!ready) discardBakes(); // whatever was baked (if anything) no longer fits
   const mode = ready ? "ink-frames" : workletReady ? "ink-bloom" : "ink-fade";
   const bloom = ready ?? rollBloom(origin);
 
@@ -420,6 +459,7 @@ export function setTheme(next: Theme, origin?: Point) {
 
   vt.ready
     .then(() => {
+      if (gen !== generation) return; // already skipped by a newer switch
       const timing: KeyframeAnimationOptions = {
         duration: bloom.duration,
         easing: "linear",
@@ -430,17 +470,19 @@ export function setTheme(next: Theme, origin?: Point) {
         const dx = origin ? Math.round(origin.x) - ready.origin.x : 0;
         const dy = origin ? Math.round(origin.y) - ready.origin.y : 0;
         const frames = dx || dy ? bakedKeyframes(ready.frames, { x: dx, y: dy }) : ready.keyframes;
-        root.animate(frames, timing);
-      }
-      else if (mode === "ink-bloom") root.animate({ "--ink-p": [0, 1] }, timing);
+        inkAnim = root.animate(frames, timing);
+      } else if (mode === "ink-bloom") inkAnim = root.animate({ "--ink-p": [0, 1] }, timing);
     })
     .catch(() => {});
 
   vt.finished.finally(() => {
-    root.classList.remove("ink-bloom", "ink-fade", "ink-frames");
-    if (mode === "ink-bloom") for (const v of Object.keys(bloom.vars)) root.style.removeProperty(v);
+    // This run's frames are done with either way
     if (ready) release(ready);
-    // A new random bloom for next time
+    // Skipped by a newer switch: that one owns the root and the cleanup
+    if (gen !== generation) return;
+    running = false;
+    clearRoot();
+    // New random blooms for next time
     scheduleBake(300);
   });
 }

@@ -6,6 +6,7 @@ import {
   readTheme,
   setTheme,
   subscribeTheme,
+  targetTheme,
   type Theme,
 } from "@/lib/theme";
 
@@ -43,7 +44,8 @@ export function ThemeToggle() {
       data-cursor="link"
       onClick={(e) => {
         const r = e.currentTarget.getBoundingClientRect();
-        setTheme(readTheme() === "dark" ? "light" : "dark", {
+        // Toggle from where the theme is heading, so quick clicks alternate
+        setTheme(targetTheme() === "dark" ? "light" : "dark", {
           x: r.left + r.width / 2,
           y: r.top + r.height / 2,
         });
